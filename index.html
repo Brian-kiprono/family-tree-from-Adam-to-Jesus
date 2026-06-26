@@ -5,593 +5,313 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="description" content="The Biblical Family Tree - From Adam to Jesus. Complete genealogical study with interactive visual tree diagram.">
     <title>The Biblical Family Tree · From Adam to Jesus</title>
-    
-    <style>
-        /* ============ ALL CSS STYLES ============ */
-        :root {
-            --bg-body: #0d1a12;
-            --bg-card: #152318;
-            --bg-card-hover: #1a2c1e;
-            --bg-sidebar: #0a150e;
-            --text-primary: #e0ece0;
-            --text-secondary: #bccdb8;
-            --text-muted: #7a9476;
-            --text-heading: #e8f5e8;
-            --accent-emerald: #4a9e6b;
-            --accent-emerald-light: #6bc48a;
-            --accent-gold: #c9a94e;
-            --accent-gold-light: #e0c870;
-            --border-soft: #1e3525;
-            --border-accent: #2d4a32;
-            --shadow-card: 0 8px 32px rgba(0,0,0,0.5);
-            --shadow-hover: 0 20px 48px rgba(0,0,0,0.6);
-            --font-serif: 'Georgia', 'Times New Roman', serif;
-            --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-            --radius-md: 20px;
-            --radius-lg: 28px;
-            --transition: 0.3s ease;
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
-
-        body {
-            background: var(--bg-body);
-            background-image: radial-gradient(ellipse at 20% 10%, rgba(74,158,107,0.08) 0%, transparent 50%), radial-gradient(ellipse at 80% 90%, rgba(201,169,78,0.06) 0%, transparent 50%);
-            font-family: var(--font-sans);
-            color: var(--text-primary);
-            line-height: 1.75;
-            font-size: 1.05rem;
-            min-height: 100vh;
-        }
-
-        /* Scrollbar */
-        ::-webkit-scrollbar { width: 10px; }
-        ::-webkit-scrollbar-track { background: #111f16; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #4a9e6b, #2d5a38); border-radius: 10px; border: 2px solid #111f16; }
-
-        /* ============ TOP NAVIGATION BAR ============ */
-        .top-nav-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.8rem 2rem;
-            background: rgba(10,21,14,0.95);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border-soft);
-            position: sticky;
-            top: 0;
-            z-index: 150;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
-
-        .nav-brand a {
-            font-family: var(--font-serif);
-            font-size: 1.1rem;
-            color: var(--accent-gold);
-            text-decoration: none;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-        }
-
-        .nav-links { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-
-        .nav-link {
-            color: var(--text-secondary);
-            text-decoration: none;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            transition: all 0.3s;
-            font-weight: 500;
-            cursor: pointer;
-            background: transparent;
-            border: none;
-            font-family: var(--font-sans);
-        }
-
-        .nav-link:hover { background: rgba(74,158,107,0.15); color: var(--accent-emerald-light); }
-        .nav-link.active { background: rgba(74,158,107,0.25); color: var(--accent-gold); font-weight: 600; }
-        .nav-link.highlight-link { color: var(--accent-gold); font-weight: 700; border: 1px solid rgba(201,169,78,0.4); }
-        .nav-link.highlight-link:hover { background: rgba(201,169,78,0.15); border-color: var(--accent-gold); }
-
-        /* ============ LAYOUT ============ */
-        .genealogy-container { display: flex; max-width: 1400px; margin: 0 auto; min-height: 100vh; }
-
-        /* ============ SIDEBAR ============ */
-        .sidebar-nav {
-            width: 260px; min-width: 260px; background: var(--bg-sidebar);
-            border-right: 1px solid var(--border-soft); padding: 1.5rem 0;
-            position: sticky; top: 0; height: 100vh; overflow-y: auto; z-index: 100;
-            box-shadow: 2px 0 24px rgba(0,0,0,0.4);
-        }
-
-        .sidebar-header { padding: 0 1.5rem 1.2rem; border-bottom: 1px solid var(--border-soft); margin-bottom: 1rem; }
-        .sidebar-header h3 { font-family: var(--font-serif); color: var(--accent-gold); font-size: 1.2rem; letter-spacing: 0.5px; }
-        .sidebar-links { display: flex; flex-direction: column; }
-
-        .sidebar-link {
-            display: block; padding: 0.55rem 1.5rem; color: var(--text-secondary);
-            text-decoration: none; font-size: 0.88rem; transition: var(--transition);
-            border-left: 3px solid transparent; font-weight: 500; line-height: 1.4; cursor: pointer;
-            background: transparent; border-top: none; border-right: none; border-bottom: none;
-            text-align: left; width: 100%; font-family: var(--font-sans);
-        }
-
-        .sidebar-link:hover { background: rgba(74,158,107,0.1); color: var(--accent-emerald-light); border-left-color: var(--accent-emerald-light); }
-        .sidebar-link.active { background: rgba(74,158,107,0.18); color: var(--accent-gold); border-left-color: var(--accent-gold); font-weight: 600; }
-        .sidebar-link.tree-link { color: var(--accent-gold) !important; font-weight: 700 !important; font-size: 0.95rem !important; background: rgba(201,169,78,0.08); border-left-color: var(--accent-gold) !important; margin: 0.3rem 0; }
-        .sidebar-link.tree-link:hover { background: rgba(201,169,78,0.2) !important; }
-        .sidebar-divider { height: 1px; background: var(--border-soft); margin: 0.5rem 1rem; }
-
-        /* ============ MAIN CONTENT ============ */
-        .main-content { flex: 1; padding: 2rem 2.5rem; max-width: 920px; }
-
-        h1, h2, h3 { font-family: var(--font-serif); font-weight: 500; color: var(--text-heading); }
-        h1 { font-size: 3.4rem; line-height: 1.15; margin-bottom: 0.5rem; background: linear-gradient(180deg, #e8f5e8, #a8d8b8, #4a9e6b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; filter: drop-shadow(0 2px 8px rgba(74,158,107,0.35)); text-align: center; }
-        h2 { font-size: 2.2rem; margin: 2.5rem 0 1.2rem; border-left: 5px solid var(--accent-emerald); padding-left: 1.2rem; }
-
-        .subtitle { text-align: center; font-size: 1.15rem; color: var(--text-muted); margin-bottom: 2.5rem; font-style: italic; border-bottom: 1px solid var(--border-accent); padding-bottom: 2rem; }
-
-        /* Cards */
-        .tree-card {
-            background: linear-gradient(145deg, #152318, #121f16); border-radius: var(--radius-lg);
-            padding: 2.5rem 2.8rem; margin: 2.5rem 0; box-shadow: var(--shadow-card);
-            border: 1px solid var(--border-soft); transition: var(--transition); position: relative; overflow: hidden;
-        }
-
-        .tree-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(135deg, #4a9e6b, #357a4d); opacity: 0.5; transform: scaleX(0.2); transform-origin: left; transition: transform 0.5s; }
-        .tree-card:hover::before { transform: scaleX(1); }
-        .tree-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); border-color: var(--border-accent); background: var(--bg-card-hover); }
-
-        .scripture-badge {
-            font-weight: 600; color: #c8e8c0;
-            background: linear-gradient(135deg, rgba(74,158,107,0.3), rgba(45,107,69,0.25));
-            display: inline-block; padding: 0.4rem 1.2rem; border-radius: 30px; font-size: 0.9rem;
-            margin: 0.6rem 0 1.2rem; letter-spacing: 0.4px; border: 1px solid rgba(74,158,107,0.3);
-        }
-
-        /* Hero Buttons */
-        .hero-section { text-align: center; padding: 3rem 1rem; }
-        .hero-buttons { display: flex; justify-content: center; gap: 1.5rem; margin: 2.5rem 0; flex-wrap: wrap; }
-
-        .hero-btn {
-            display: inline-block; padding: 1rem 2rem; border-radius: 50px; font-size: 1.1rem;
-            font-weight: 600; text-decoration: none; transition: all 0.3s; cursor: pointer;
-            border: 2px solid transparent; letter-spacing: 0.5px; font-family: var(--font-sans);
-        }
-
-        .hero-btn.primary { background: linear-gradient(135deg, #4a9e6b, #357a4d); color: #e8f5e8; border-color: #4a9e6b; box-shadow: 0 8px 24px rgba(74,158,107,0.3); }
-        .hero-btn.primary:hover { background: linear-gradient(135deg, #6bc48a, #4a9e6b); box-shadow: 0 12px 32px rgba(74,158,107,0.5); transform: translateY(-3px); }
-        .hero-btn.secondary { background: transparent; color: #c9a94e; border-color: #c9a94e; }
-        .hero-btn.secondary:hover { background: rgba(201,169,78,0.1); transform: translateY(-3px); }
-        .btn-icon { margin-right: 0.5rem; font-size: 1.3rem; }
-
-        /* Quick Links Grid */
-        .quick-links-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin: 3rem 0; }
-
-        .quick-link-card {
-            background: var(--bg-card); border-radius: var(--radius-lg); padding: 2rem;
-            border: 1px solid var(--border-soft); transition: all 0.3s; text-decoration: none;
-            color: var(--text-primary); cursor: pointer; position: relative; overflow: hidden; display: block;
-        }
-
-        .quick-link-card:hover { border-color: var(--accent-emerald); box-shadow: 0 12px 32px rgba(0,0,0,0.4); transform: translateY(-4px); }
-        .quick-link-card .card-icon { font-size: 2.5rem; margin-bottom: 1rem; display: block; }
-        .quick-link-card h3 { color: var(--accent-gold); font-size: 1.3rem; margin: 0.5rem 0; }
-        .quick-link-card p { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.5; }
-        .card-badge { display: inline-block; background: rgba(74,158,107,0.2); color: var(--accent-emerald-light); padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.75rem; margin-top: 0.8rem; font-weight: 600; }
-
-        /* Visual Tree Styles */
-        .visual-tree-container { overflow-x: auto; padding: 2rem 1rem; }
-        .visual-tree-wrapper { display: flex; flex-direction: column; align-items: center; gap: 2rem; padding: 2rem 0; min-width: max-content; }
-        .tree-generation-row { display: flex; align-items: center; justify-content: center; gap: 1rem; flex-wrap: nowrap; position: relative; min-width: fit-content; }
-        .tree-section-divider { width: 100%; max-width: 800px; text-align: center; padding: 1.5rem; margin: 1rem 0; border-top: 1px solid var(--border-soft); border-bottom: 1px solid var(--border-soft); }
-        .tree-section-divider h3 { font-family: var(--font-serif); color: var(--accent-gold); font-size: 1.2rem; }
-        .tree-section-divider p { color: var(--text-muted); font-size: 0.8rem; }
-
-        .tree-node {
-            position: relative; display: flex; flex-direction: column; align-items: center;
-            cursor: pointer; transition: transform 0.3s; z-index: 1; min-width: 70px;
-        }
-
-        .tree-node:hover { transform: translateY(-5px); z-index: 10; }
-
-        .node-circle {
-            width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center;
-            justify-content: center; font-weight: bold; font-size: 0.75rem; text-align: center;
-            border: 3px solid var(--border-soft); background: var(--bg-card); color: var(--text-primary);
-            transition: all 0.3s; position: relative;
-        }
-
-        .node-circle.male { border-color: #5a8aaa; background: #1a2a38; }
-        .node-circle.female { border-color: #9a6a8a; background: #2a1a28; }
-        .node-circle.covenant { border-color: var(--accent-gold); box-shadow: 0 0 15px rgba(201,169,78,0.4); background: #2a2410; }
-        .node-circle.jesus { border-color: #ffd700; box-shadow: 0 0 25px rgba(255,215,0,0.7); background: #3a3000; font-size: 0.85rem; }
-
-        .tree-node:hover .node-circle { border-color: var(--accent-emerald); box-shadow: 0 0 20px rgba(74,158,107,0.5); }
-
-        .node-label { margin-top: 0.4rem; font-size: 0.7rem; text-align: center; color: #bccdb8; max-width: 80px; line-height: 1.2; }
-        .node-sub { font-size: 0.6rem; color: var(--text-muted); text-align: center; }
-
-        .connector-down { width: 2px; height: 25px; background: var(--border-soft); margin: 0 auto; }
-        .spouse-connector { width: 25px; height: 2px; background: #5a3a5a; position: relative; align-self: center; }
-
-        .node-tooltip {
-            display: none; position: absolute; bottom: calc(100% + 10px); left: 50%;
-            transform: translateX(-50%); background: #1a2c1e; border: 1px solid var(--accent-emerald);
-            border-radius: 10px; padding: 0.7rem 1rem; font-size: 0.75rem; white-space: nowrap;
-            z-index: 20; pointer-events: none; box-shadow: 0 8px 24px rgba(0,0,0,0.5); color: #e0ece0;
-        }
-
-        .node-tooltip strong { color: var(--accent-gold); display: block; margin-bottom: 0.2rem; }
-        .tree-node:hover .node-tooltip { display: block; }
-
-        .scroll-top-btn {
-            position: fixed; bottom: 2.5rem; right: 2.5rem;
-            background: linear-gradient(135deg, #4a9e6b, #357a4d); color: #e8f5e8;
-            border: 2px solid rgba(201,169,78,0.4); border-radius: 50%; width: 54px; height: 54px;
-            font-size: 1.5rem; cursor: pointer; box-shadow: 0 8px 24px rgba(0,0,0,0.5);
-            transition: 0.35s; z-index: 200; display: flex; align-items: center; justify-content: center;
-            opacity: 0; pointer-events: none;
-        }
-
-        .scroll-top-btn:hover { background: linear-gradient(135deg, #6bc48a, #4a9e6b); transform: translateY(-5px); }
-
-        footer { text-align: center; margin-top: 3rem; padding: 2rem; color: var(--text-muted); border-top: 1px solid var(--border-accent); font-style: italic; }
-
-        @media (max-width: 900px) {
-            .genealogy-container { flex-direction: column; }
-            .sidebar-nav { width: 100%; min-width: 100%; height: auto; position: relative; padding: 1rem; }
-            .sidebar-links { flex-direction: row; flex-wrap: wrap; gap: 0.3rem; }
-            .sidebar-link { padding: 0.4rem 0.8rem; font-size: 0.75rem; border-left: none; border-bottom: 2px solid transparent; }
-            .sidebar-link.active { border-left: none; border-bottom-color: var(--accent-gold); }
-            .main-content { padding: 1rem; }
-            h1 { font-size: 2.3rem; }
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <!-- ============ TOP NAVIGATION BAR ============ -->
     <nav class="top-nav-bar">
         <div class="nav-brand">
-            <a href="#" onclick="scrollToSection('home')">🌳 Biblical Family Tree</a>
+            <a href="index.html">🌳 Biblical Family Tree</a>
         </div>
         <div class="nav-links">
-            <button class="nav-link active" onclick="scrollToSection('home')">Home</button>
-            <button class="nav-link highlight-link" onclick="scrollToSection('visual-tree-section')">🎨 Visual Tree</button>
-            <button class="nav-link" onclick="scrollToSection('study')">Full Study</button>
-            <button class="nav-link" onclick="scrollToSection('about')">About</button>
+            <a href="index.html" class="nav-link active">Home</a>
+            <a href="family-tree.html" class="nav-link highlight-link">🎨 Interactive Family Tree</a>
+            <a href="#study" class="nav-link">Full Study</a>
+            <a href="#about" class="nav-link">About</a>
         </div>
     </nav>
 
     <div class="genealogy-container">
-        <!-- SIDEBAR -->
+        <!-- Sidebar -->
         <nav class="sidebar-nav" id="sidebarNav">
             <div class="sidebar-header"><h3>🌳 The Family Tree</h3></div>
             <div class="sidebar-links">
-                <button class="sidebar-link active" onclick="scrollToSection('home')">🏠 Home</button>
-                <button class="sidebar-link tree-link" onclick="scrollToSection('visual-tree-section')">🎨 VISUAL TREE DIAGRAM</button>
+                <a href="index.html" class="sidebar-link active">🏠 Home</a>
+                <a href="family-tree.html" class="sidebar-link tree-link">🎨 VISUAL TREE DIAGRAM</a>
                 <div class="sidebar-divider"></div>
-                <button class="sidebar-link" onclick="scrollToSection('adam-eve')">Adam & Eve</button>
-                <button class="sidebar-link" onclick="scrollToSection('cain-abel-seth')">Cain, Abel & Seth</button>
-                <button class="sidebar-link" onclick="scrollToSection('pre-flood')">Pre-Flood Patriarchs</button>
-                <button class="sidebar-link" onclick="scrollToSection('noah')">Noah & The Flood</button>
-                <button class="sidebar-link" onclick="scrollToSection('abraham')">Abraham</button>
-                <button class="sidebar-link" onclick="scrollToSection('twelve-sons')">The Twelve Sons</button>
-                <button class="sidebar-link" onclick="scrollToSection('joseph')">Joseph's Story</button>
-                <button class="sidebar-link" onclick="scrollToSection('jesus')">Jesus Christ</button>
-                <button class="sidebar-link" onclick="scrollToSection('summary')">Summary</button>
+                <a href="#home" class="sidebar-link">Introduction</a>
+                <a href="#adam-eve" class="sidebar-link">Adam & Eve</a>
+                <a href="#cain-abel-seth" class="sidebar-link">Cain, Abel & Seth</a>
+                <a href="#pre-flood" class="sidebar-link">Pre-Flood Patriarchs</a>
+                <a href="#noah" class="sidebar-link">Noah & The Flood</a>
+                <a href="#shem-ham-japheth" class="sidebar-link">Shem, Ham & Japheth</a>
+                <a href="#abraham" class="sidebar-link">Abraham</a>
+                <a href="#ishmael-isaac" class="sidebar-link">Ishmael & Isaac</a>
+                <a href="#jacob-esau" class="sidebar-link">Jacob & Esau</a>
+                <a href="#twelve-sons" class="sidebar-link">The Twelve Sons</a>
+                <a href="#joseph" class="sidebar-link">Joseph's Story</a>
+                <a href="#moses" class="sidebar-link">Moses & Exodus</a>
+                <a href="#joshua" class="sidebar-link">Joshua & Conquest</a>
+                <a href="#judges" class="sidebar-link">The Judges</a>
+                <a href="#kings" class="sidebar-link">The Kings</a>
+                <a href="#prophets" class="sidebar-link">The Prophets</a>
+                <a href="#exile" class="sidebar-link">Exile & Return</a>
+                <a href="#jesus" class="sidebar-link">Jesus Christ</a>
+                <a href="#full-genealogy" class="sidebar-link">Complete Genealogy</a>
+                <a href="#summary" class="sidebar-link">Summary & Lessons</a>
             </div>
         </nav>
 
-        <!-- MAIN CONTENT -->
+        <!-- Main Content -->
         <main class="main-content">
             
-            <!-- HERO / HOME -->
+            <!-- HERO SECTION -->
             <header class="hero-section" id="home">
                 <h1>The Biblical Family Tree</h1>
-                <p class="subtitle">From Adam to Jesus Christ — Every Generation, Every Story, Every Connection</p>
+                <p class="genealogy-subtitle">From Adam to Jesus Christ — Every Generation, Every Story, Every Connection</p>
                 
                 <div class="hero-buttons">
-                    <button class="hero-btn primary" onclick="scrollToSection('visual-tree-section')">
+                    <a href="family-tree.html" class="hero-btn primary">
                         <span class="btn-icon">🎨</span> View Interactive Family Tree
-                    </button>
-                    <button class="hero-btn secondary" onclick="scrollToSection('adam-eve')">
+                    </a>
+                    <a href="#adam-eve" class="hero-btn secondary">
                         <span class="btn-icon">📖</span> Start Reading the Study
-                    </button>
+                    </a>
                 </div>
                 
-                <div class="quick-links-grid">
-                    <div class="quick-link-card" onclick="scrollToSection('visual-tree-section')" style="cursor:pointer;">
-                        <span class="card-icon">🎨</span>
-                        <h3>Interactive Visual Tree</h3>
-                        <p>A beautiful, clickable diagram showing the complete family tree from Adam to Jesus. Hover over any name to see details.</p>
-                        <span class="card-badge">👆 Click to View</span>
+                <div class="feature-list">
+                    <div class="feature-item">
+                        <span class="feature-icon">👥</span>
+                        <strong>77+ Generations</strong>
+                        <span>Adam to Jesus</span>
                     </div>
-                    
-                    <div class="quick-link-card" onclick="scrollToSection('adam-eve')" style="cursor:pointer;">
-                        <span class="card-icon">🍎</span>
-                        <h3>Adam & Eve</h3>
-                        <p>The first family — Creation, the Garden of Eden, the Fall, and the promise of a Redeemer.</p>
-                        <span class="card-badge">Chapter 1</span>
+                    <div class="feature-item">
+                        <span class="feature-icon">📜</span>
+                        <strong>~4,000 Years</strong>
+                        <span>Of biblical history</span>
                     </div>
-                    
-                    <div class="quick-link-card" onclick="scrollToSection('noah')" style="cursor:pointer;">
-                        <span class="card-icon">🚢</span>
-                        <h3>Noah & The Flood</h3>
-                        <p>The ark, the worldwide flood, and humanity's fresh start through Noah's three sons.</p>
-                        <span class="card-badge">Chapter 4</span>
+                    <div class="feature-item">
+                        <span class="feature-icon">🎨</span>
+                        <strong>Visual Diagram</strong>
+                        <span>Interactive tree</span>
                     </div>
-                    
-                    <div class="quick-link-card" onclick="scrollToSection('abraham')" style="cursor:pointer;">
-                        <span class="card-icon">⭐</span>
-                        <h3>Abraham</h3>
-                        <p>The father of many nations — God's covenant promises of land, descendants, and blessing.</p>
-                        <span class="card-badge">Chapter 6</span>
-                    </div>
-                    
-                    <div class="quick-link-card" onclick="scrollToSection('twelve-sons')" style="cursor:pointer;">
-                        <span class="card-icon">👑</span>
-                        <h3>The Twelve Tribes</h3>
-                        <p>Jacob's twelve sons who became the founders of Israel's tribes and the royal line of Judah.</p>
-                        <span class="card-badge">Chapter 9</span>
-                    </div>
-                    
-                    <div class="quick-link-card" onclick="scrollToSection('jesus')" style="cursor:pointer;">
-                        <span class="card-icon">✝️</span>
-                        <h3>Jesus Christ</h3>
-                        <p>The fulfillment — how every covenant promise converges in Jesus, the Son of David.</p>
-                        <span class="card-badge">Chapter 17</span>
+                    <div class="feature-item">
+                        <span class="feature-icon">📖</span>
+                        <strong>20+ Chapters</strong>
+                        <span>In-depth study</span>
                     </div>
                 </div>
             </header>
 
-            <!-- ============ VISUAL TREE SECTION ============ -->
-            <div class="tree-card" id="visual-tree-section">
-                <h2>🎨 Interactive Visual Family Tree</h2>
-                <span class="scripture-badge">Hover over any circle to see details · Gold rings = Covenant figures · Gold glow = Jesus</span>
+            <!-- QUICK LINKS -->
+            <div class="tree-card" id="study">
+                <h2>Explore the Family Tree</h2>
+                <p>Choose how you want to explore the biblical genealogy:</p>
                 
-                <div class="visual-tree-container">
-                    <div class="visual-tree-wrapper" id="familyTreeDiagram">
-                        <!-- Generated by JavaScript -->
-                    </div>
+                <div class="quick-links-grid">
+                    <a href="family-tree.html" class="quick-link-card">
+                        <span class="card-icon">🎨</span>
+                        <h3>Interactive Visual Tree</h3>
+                        <p>A beautiful, clickable diagram showing the complete family tree from Adam to Jesus. Hover over any name to see details. Color-coded nodes show males, females, covenant figures, and Christ.</p>
+                        <span class="card-badge">👆 Click to Open</span>
+                    </a>
+                    
+                    <a href="#adam-eve" class="quick-link-card">
+                        <span class="card-icon">🍎</span>
+                        <h3>Adam & Eve</h3>
+                        <p>The first family — Creation, the Garden of Eden, the Fall, and the promise of a Redeemer.</p>
+                        <span class="card-badge">Chapter 1</span>
+                    </a>
+                    
+                    <a href="#noah" class="quick-link-card">
+                        <span class="card-icon">🚢</span>
+                        <h3>Noah & The Flood</h3>
+                        <p>The ark, the worldwide flood, God's covenant with the rainbow, and humanity's fresh start.</p>
+                        <span class="card-badge">Chapter 4</span>
+                    </a>
+                    
+                    <a href="#abraham" class="quick-link-card">
+                        <span class="card-icon">⭐</span>
+                        <h3>Abraham</h3>
+                        <p>The father of many nations — God's covenant promises of land, descendants, and blessing.</p>
+                        <span class="card-badge">Chapter 6</span>
+                    </a>
+                    
+                    <a href="#twelve-sons" class="quick-link-card">
+                        <span class="card-icon">👑</span>
+                        <h3>The Twelve Tribes</h3>
+                        <p>Jacob's twelve sons who became the founders of Israel's tribes and the royal line of Judah.</p>
+                        <span class="card-badge">Chapter 9</span>
+                    </a>
+                    
+                    <a href="#jesus" class="quick-link-card">
+                        <span class="card-icon">✝️</span>
+                        <h3>Jesus Christ</h3>
+                        <p>The fulfillment — how every covenant promise converges in Jesus, the Son of David.</p>
+                        <span class="card-badge">Chapter 17</span>
+                    </a>
                 </div>
             </div>
 
-            <!-- ============ STUDY SECTIONS ============ -->
-            <div class="tree-card" id="study">
-                <h2>📖 The Complete Study</h2>
-                <p>Click any chapter in the sidebar or use the quick-link cards above to navigate through the full genealogical study.</p>
-            </div>
-
+            <!-- STUDY SECTIONS -->
             <div class="tree-card" id="adam-eve">
                 <h2>Chapter 1: Adam and Eve — The First Family</h2>
                 <span class="scripture-badge">📖 Genesis 1-5</span>
                 <h3>The Creation of Humanity</h3>
-                <p>According to the book of Genesis, God created the heavens and the earth in six days. On the sixth day, God created humanity — <strong>Adam</strong> — from the dust of the ground, breathing into his nostrils the breath of life. The name "Adam" (Hebrew: אָדָם) is related to the word for "ground" (adamah), emphasizing his earthly origin while also carrying the meaning of "mankind."</p>
-                <p>God placed Adam in the <strong>Garden of Eden</strong>, a paradise filled with every tree that was pleasing to the eye and good for food. Two trees held special significance: the Tree of Life and the Tree of the Knowledge of Good and Evil. Adam was permitted to eat from any tree except the Tree of the Knowledge of Good and Evil.</p>
+                <p>According to the book of Genesis, God created the heavens and the earth in six days. On the sixth day, God created humanity — <strong>Adam</strong> — from the dust of the ground, breathing into his nostrils the breath of life. The name "Adam" (Hebrew: אָדָם) is related to the word for "ground" (adamah), emphasizing his earthly origin while also carrying the meaning of "mankind" or "humanity."</p>
+                <p>God placed Adam in the <strong>Garden of Eden</strong>, a paradise filled with every tree that was pleasing to the eye and good for food. Two trees held special significance: the <strong>Tree of Life</strong> and the <strong>Tree of the Knowledge of Good and Evil</strong>. Adam was given the responsibility to work the garden and care for it, and he was permitted to eat from any tree except the Tree of the Knowledge of Good and Evil.</p>
+                
                 <h3>The Creation of Eve</h3>
-                <p>God declared that it was not good for Adam to be alone. He caused Adam to fall into a deep sleep, took one of his ribs, and fashioned it into a woman. Adam named her <strong>Eve</strong> (Hebrew: חַוָּה, Chavah), meaning "life" or "living," because she would become the mother of all the living.</p>
+                <p>God declared that it was not good for Adam to be alone. He caused Adam to fall into a deep sleep, took one of his ribs, and fashioned it into a woman. When Adam awoke and saw her, he declared: <em>"This is now bone of my bones and flesh of my flesh; she shall be called 'woman,' for she was taken out of man."</em> Adam named her <strong>Eve</strong> (Hebrew: חַוָּה, Chavah), meaning "life" or "living," because she would become the mother of all the living.</p>
+                
                 <h3>The Fall</h3>
-                <p>The serpent approached Eve and questioned God's command. He suggested that eating the forbidden fruit would not cause death but would instead open their eyes, making them like God. Eve ate the fruit and gave some to Adam, who also ate. Their eyes were opened, and they realized they were naked. God pronounced consequences: pain in childbirth, cursed ground, and expulsion from Eden. Yet God also gave a cryptic promise — the woman's offspring would crush the serpent's head (Genesis 3:15), called the <strong>Protoevangelium</strong> — the first gospel.</p>
+                <p>The serpent, described as more crafty than any other beast of the field, approached Eve and questioned God's command. He suggested that eating the forbidden fruit would not cause death but would instead open their eyes, making them like God, knowing good and evil. Eve saw that the fruit was desirable for gaining wisdom, so she ate it and gave some to Adam, who also ate.</p>
+                <p>Immediately, their eyes were opened, and they realized they were naked. They sewed fig leaves together to cover themselves and hid from God among the trees. When God confronted them, Adam blamed Eve, and Eve blamed the serpent. God pronounced consequences:</p>
+                <ul>
+                    <li><strong>The serpent:</strong> Cursed to crawl on its belly and eat dust; enmity between the serpent and the woman's offspring</li>
+                    <li><strong>The woman:</strong> Pain in childbirth; her desire would be for her husband</li>
+                    <li><strong>The man:</strong> The ground was cursed; he would toil and sweat for his food until returning to dust</li>
+                </ul>
+                <p>God made garments of skin for Adam and Eve, then expelled them from Eden to prevent them from eating from the Tree of Life and living forever in their fallen state. He placed cherubim and a flaming sword to guard the way back.</p>
+                
+                <h3>Historical and Theological Significance</h3>
+                <p>Adam and Eve represent the beginning of human history in the biblical narrative. In Christian theology, Adam is contrasted with Christ: through Adam came sin and death; through Christ came righteousness and life (Romans 5:12-21). In Jewish tradition, Adam is the first patriarch, and the story explains the human condition — our moral awareness, our tendency toward disobedience, and our need for redemption. Islam also honors Adam as the first prophet and the first human created by Allah.</p>
             </div>
 
             <div class="tree-card" id="cain-abel-seth">
-                <h2>Chapter 2: Cain, Abel, and Seth</h2>
+                <h2>Chapter 2: Cain, Abel, and Seth — The First Generation</h2>
                 <span class="scripture-badge">📖 Genesis 4-5</span>
-                <p><strong>Cain and Abel</strong> were the first two sons of Adam and Eve. Cain became a farmer; Abel became a shepherd. Both brought offerings to God, but God accepted Abel's and rejected Cain's. In jealousy, Cain killed Abel — the first murder. God marked Cain for protection but sent him away as a restless wanderer.</p>
-                <p><strong>Seth</strong> was born after Abel's death. Eve named him "appointed," saying God had granted her another child in place of Abel. The biblical narrative traces the righteous line through Seth.</p>
+                
+                <h3>Cain and Abel — The First Brothers</h3>
+                <p>Adam and Eve's first two named sons were <strong>Cain</strong> and <strong>Abel</strong>. Cain became a farmer, working the soil that God had cursed. Abel became a shepherd, keeping flocks. In the course of time, both brought offerings to God: Cain brought some of the fruits of the soil, while Abel brought fat portions from the firstborn of his flock. God looked with favor on Abel and his offering but did not look with favor on Cain and his offering.</p>
+                
+                <h3>The First Murder</h3>
+                <p>Cain became very angry, and his face was downcast. God warned him: <em>"If you do what is right, will you not be accepted? But if you do not do what is right, sin is crouching at your door; it desires to have you, but you must rule over it."</em> Despite this warning, Cain invited his brother Abel out to the field and killed him — the first recorded murder in human history.</p>
+                <p>When God asked Cain where Abel was, Cain responded with the famous question: <em>"Am I my brother's keeper?"</em> God pronounced judgment: the ground would no longer yield its strength for Cain; he would be a restless wanderer on the earth. Cain expressed fear that others would kill him, so God placed a mark on Cain to protect him.</p>
+                
+                <h3>Seth — The Appointed Seed</h3>
+                <p>After Abel's death, Eve gave birth to another son whom she named <strong>Seth</strong> (Hebrew: שֵׁת), meaning "appointed" or "granted," saying, "God has granted me another child in place of Abel, since Cain killed him." The biblical narrative traces the righteous line through Seth rather than Cain.</p>
             </div>
 
             <div class="tree-card" id="pre-flood">
-                <h2>Chapter 3: The Pre-Flood Patriarchs</h2>
+                <h2>Chapter 3: The Pre-Flood Patriarchs — Ten Generations</h2>
                 <span class="scripture-badge">📖 Genesis 5</span>
-                <p>Ten generations from Adam to Noah: Adam (930 yrs) → Seth (912) → Enosh (905) → Kenan (910) → Mahalalel (895) → Jared (962) → <strong>Enoch</strong> (365 — taken by God without dying) → <strong>Methuselah</strong> (969 — longest-lived human) → Lamech (777) → <strong>Noah</strong> (950).</p>
+                <p>Genesis 5 records ten generations from Adam to Noah. These patriarchs are remarkable for their extraordinary lifespans.</p>
+                <p><strong>1. Adam</strong> (930 years) — The first man · <strong>2. Seth</strong> (912 years) — The appointed seed · <strong>3. Enosh</strong> (905 years) — People began calling on the LORD · <strong>4. Kenan</strong> (910 years) · <strong>5. Mahalalel</strong> (895 years) · <strong>6. Jared</strong> (962 years) — Second longest lifespan · <strong>7. Enoch</strong> (365 years) — Walked with God and was taken without dying! · <strong>8. Methuselah</strong> (969 years) — Longest-lived human, died the year of the Flood · <strong>9. Lamech</strong> (777 years) — Father of Noah · <strong>10. Noah</strong> (950 years) — The righteous man who built the ark.</p>
             </div>
 
             <div class="tree-card" id="noah">
                 <h2>Chapter 4: Noah and the Great Flood</h2>
                 <span class="scripture-badge">📖 Genesis 6-10</span>
-                <p>Humanity became so wicked that God determined to destroy it with a flood. <strong>Noah</strong>, a righteous man, found favor with God. He built an ark and brought his wife, his three sons (<strong>Shem, Ham, and Japheth</strong>), their wives, and pairs of every animal. Rain fell for 40 days and nights. After the flood, God made a covenant with Noah, promising never again to destroy the earth by flood, with the <strong>rainbow</strong> as its sign.</p>
-                <p>Through Noah's three sons, the entire post-flood world was populated. Israel's ancestry continues through <strong>Shem</strong>.</p>
+                <p>Humanity became so wicked that God determined to destroy it with a flood. <strong>Noah</strong>, a righteous man, found favor with God. He built an ark and brought his wife, his three sons (<strong>Shem, Ham, and Japheth</strong>), their wives, and pairs of every animal. Rain fell for 40 days and nights. After the flood, God made a covenant with Noah, promising never again to destroy the earth by flood, with the <strong>rainbow</strong> as its sign. Through Noah's three sons, the entire post-flood world was populated.</p>
+            </div>
+
+            <div class="tree-card" id="shem-ham-japheth">
+                <h2>Chapter 5: Shem, Ham, and Japheth — The Table of Nations</h2>
+                <span class="scripture-badge">📖 Genesis 10-11</span>
+                <p>Genesis 10 traces the descendants of Noah's three sons. <strong>Japheth's</strong> descendants are associated with peoples north and west of Israel. <strong>Ham's</strong> descendants with Africa and parts of the Near East. <strong>Shem's</strong> line leads to Abraham and ultimately Israel. The <strong>Tower of Babel</strong> (Genesis 11) explains the origin of different languages and the dispersal of nations.</p>
             </div>
 
             <div class="tree-card" id="abraham">
-                <h2>Chapter 5: Abraham — Father of Many Nations</h2>
+                <h2>Chapter 6: Abraham — Father of Many Nations</h2>
                 <span class="scripture-badge">📖 Genesis 12-25</span>
-                <p>The genealogy from Shem to Abraham: Shem → Arphaxad → Shelah → Eber → Peleg → Reu → Serug → Nahor → Terah → <strong>Abram</strong> (later Abraham).</p>
-                <p>God called Abram at age 75: <em>"Go from your country to the land I will show you. I will make you into a great nation and all peoples on earth will be blessed through you."</em> This is the <strong>Abrahamic Covenant</strong>.</p>
-                <p>Abraham's wife <strong>Sarah</strong> was barren. Through her servant Hagar, Abraham fathered <strong>Ishmael</strong>. Later, Sarah miraculously gave birth to <strong>Isaac</strong> at age 90. God tested Abraham by commanding him to sacrifice Isaac, but at the last moment provided a ram as a substitute — a profound foreshadowing of Christ's sacrifice.</p>
+                <p>The genealogy from Shem to Abraham: Shem → Arphaxad → Shelah → Eber → Peleg → Reu → Serug → Nahor → Terah → <strong>Abram</strong> (later Abraham). God called Abram at age 75 with the <strong>Abrahamic Covenant</strong>: land, countless descendants, and blessing to all nations. His wife <strong>Sarah</strong> bore <strong>Isaac</strong> at age 90. God tested Abraham by commanding him to sacrifice Isaac, but provided a ram as substitute — foreshadowing Christ.</p>
+            </div>
+
+            <div class="tree-card" id="ishmael-isaac">
+                <h2>Chapter 7: Ishmael and Isaac — Two Sons, Two Nations</h2>
+                <span class="scripture-badge">📖 Genesis 21-28</span>
+                <p><strong>Ishmael</strong> was Abraham's firstborn through Hagar. God promised he would become a great nation. Islamic tradition traces Muhammad through Ishmael. <strong>Isaac</strong> was the son of promise. He married <strong>Rebekah</strong> and had twin sons: <strong>Esau</strong> (the hunter who sold his birthright) and <strong>Jacob</strong> (who obtained the blessing through deception).</p>
+            </div>
+
+            <div class="tree-card" id="jacob-esau">
+                <h2>Chapter 8: Jacob Becomes Israel</h2>
+                <span class="scripture-badge">📖 Genesis 28-36</span>
+                <p>Fleeing from Esau, Jacob dreamed of a ladder reaching heaven at <strong>Bethel</strong>. He worked 14 years for Laban to marry <strong>Leah</strong> and <strong>Rachel</strong>. Returning to Canaan, he wrestled with a mysterious being and was renamed <strong>Israel</strong> — "he struggles with God." He reconciled with Esau in a moving reunion.</p>
             </div>
 
             <div class="tree-card" id="twelve-sons">
-                <h2>Chapter 6: The Twelve Sons of Israel</h2>
+                <h2>Chapter 9: The Twelve Sons of Israel</h2>
                 <span class="scripture-badge">📖 Genesis 29-30, 35, 49</span>
-                <p><strong>Jacob</strong> (renamed Israel after wrestling with God) had twelve sons through four women:</p>
-                <p><strong>Leah's sons:</strong> Reuben, Simeon, Levi, Judah, Issachar, Zebulun (and daughter Dinah)</p>
-                <p><strong>Rachel's sons:</strong> Joseph, Benjamin (Rachel died giving birth to Benjamin)</p>
+                <p>Jacob's twelve sons became the founders of the Twelve Tribes:</p>
+                <p><strong>Leah's sons:</strong> Reuben, Simeon, Levi (priestly tribe), <strong>Judah</strong> (royal/Messianic line), Issachar, Zebulun</p>
+                <p><strong>Rachel's sons:</strong> <strong>Joseph</strong> (double inheritance through Ephraim & Manasseh), Benjamin</p>
                 <p><strong>Bilhah's sons:</strong> Dan, Naphtali</p>
                 <p><strong>Zilpah's sons:</strong> Gad, Asher</p>
-                <p><strong>Judah</strong> received the Messianic blessing: "The scepter will not depart from Judah." <strong>Joseph</strong> received the double inheritance through his sons Ephraim and Manasseh. <strong>Levi</strong> became the priestly tribe.</p>
+                <p>Judah received the Messianic blessing: "The scepter will not depart from Judah" — fulfilled in Jesus Christ.</p>
             </div>
 
             <div class="tree-card" id="joseph">
-                <h2>Chapter 7: Joseph — From Slave to Ruler</h2>
+                <h2>Chapter 10: Joseph — From Slave to Ruler</h2>
                 <span class="scripture-badge">📖 Genesis 37-50</span>
-                <p>Joseph was Jacob's favorite son. His jealous brothers sold him into slavery in Egypt. After years of hardship — including false accusation and imprisonment — Joseph interpreted Pharaoh's dreams and became second-in-command over Egypt. During a famine, his brothers came for grain. Joseph forgave them: <em>"You intended to harm me, but God intended it for good."</em> Jacob's entire family (70 persons) moved to Egypt, setting the stage for the Exodus.</p>
+                <p>Joseph was Jacob's favorite son. His jealous brothers sold him into slavery in Egypt. After years of hardship — including false accusation and imprisonment — Joseph interpreted Pharaoh's dreams and became second-in-command over Egypt. During a famine, his brothers came for grain. Joseph forgave them: <em>"You intended to harm me, but God intended it for good to accomplish the saving of many lives."</em> Jacob's entire family moved to Egypt.</p>
+            </div>
+
+            <div class="tree-card" id="moses">
+                <h2>Chapter 11: Moses and the Exodus</h2>
+                <span class="scripture-badge">📖 Exodus 1-40</span>
+                <p>After Joseph's death, a new Pharaoh enslaved the Israelites. <strong>Moses</strong>, saved from the Nile as a baby, was called by God at the burning bush. Through ten plagues, God freed Israel. The <strong>Red Sea</strong> parted, and Israel escaped while Egypt's army drowned. At <strong>Mount Sinai</strong>, God gave the Ten Commandments. Moses led Israel 40 years in the wilderness but died within sight of the Promised Land.</p>
+            </div>
+
+            <div class="tree-card" id="joshua">
+                <h2>Chapter 12: Joshua and the Conquest</h2>
+                <span class="scripture-badge">📖 Joshua 1-24</span>
+                <p><strong>Joshua</strong> succeeded Moses, leading Israel across the Jordan River, conquering <strong>Jericho</strong> (whose walls fell after marching), and distributing the land among the twelve tribes.</p>
+            </div>
+
+            <div class="tree-card" id="judges">
+                <h2>Chapter 13: The Period of the Judges</h2>
+                <span class="scripture-badge">📖 Judges 1-21 · Ruth</span>
+                <p>For approximately 300-400 years, God raised up judges: <strong>Deborah</strong> (prophetess), <strong>Gideon</strong> (defeated Midianites with 300 men), <strong>Samson</strong> (strength from Nazirite vow, betrayed by Delilah). The book of <strong>Ruth</strong> tells of a Moabite woman who became great-grandmother of King David.</p>
+            </div>
+
+            <div class="tree-card" id="kings">
+                <h2>Chapter 14: The Kings of Israel</h2>
+                <span class="scripture-badge">📖 1 Samuel — 2 Chronicles</span>
+                <p><strong>Saul</strong> was the first king but disobeyed. <strong>David</strong> killed Goliath, became king, captured Jerusalem, and received the eternal throne covenant. <strong>Solomon</strong> built the Temple. After him, the kingdom split: Israel (north, 19 kings, none faithful) and Judah (south, 20 rulers, some godly like Hezekiah and Josiah).</p>
+            </div>
+
+            <div class="tree-card" id="prophets">
+                <h2>Chapter 15: The Prophets</h2>
+                <span class="scripture-badge">📖 Isaiah — Malachi</span>
+                <p>God sent prophets: <strong>Isaiah</strong> (virgin birth, suffering servant), <strong>Jeremiah</strong> (weeping prophet, new covenant), <strong>Ezekiel</strong> (valley of dry bones), <strong>Daniel</strong> (lion's den, apocalyptic visions), and twelve minor prophets.</p>
+            </div>
+
+            <div class="tree-card" id="exile">
+                <h2>Chapter 16: Exile and Return</h2>
+                <span class="scripture-badge">📖 2 Kings 25 · Ezra · Nehemiah · Esther</span>
+                <p>Israel fell to Assyria (722 BC). Judah fell to Babylon (586 BC); the Temple was destroyed. Under Persian king <strong>Cyrus</strong>, exiles returned. <strong>Zerubbabel</strong> rebuilt the Temple, <strong>Nehemiah</strong> rebuilt walls, <strong>Ezra</strong> restored spiritual life. <strong>Esther</strong> saved Jews in Persia from genocide.</p>
             </div>
 
             <div class="tree-card" id="jesus">
-                <h2>Chapter 8: Jesus Christ — The Fulfillment</h2>
+                <h2>Chapter 17: Jesus Christ — The Fulfillment</h2>
                 <span class="scripture-badge">📖 Matthew 1:1-17 · Luke 3:23-38</span>
-                <p>The New Testament provides two genealogies of Jesus. <strong>Matthew's</strong> traces the legal line through Joseph: Abraham → David → Exile → Christ, organized in three groups of 14 generations. <strong>Luke's</strong> traces back to Adam, emphasizing Jesus as Savior of all humanity.</p>
-                <p>From Genesis 3:15 to the promises to Abraham, Isaac, Jacob, Judah, and David — the entire biblical narrative points to Jesus. Christians believe He is the fulfillment: the Son of David, the Lion of Judah, the promised Seed who brings redemption.</p>
+                <p>The New Testament provides two genealogies. <strong>Matthew</strong> traces Jesus' legal line through Joseph: Abraham → David → Exile → Christ (3 groups of 14). <strong>Luke</strong> traces back to Adam, emphasizing Jesus as Savior of all. Jesus is the fulfillment: Son of David, Lion of Judah, Seed of Abraham, the promised Redeemer who brings salvation.</p>
+            </div>
+
+            <div class="tree-card" id="full-genealogy">
+                <h2>The Complete Genealogy at a Glance</h2>
+                <span class="scripture-badge">📖 Genesis 5, 11 · Matthew 1 · Luke 3</span>
+                <div class="genealogy-flow">
+                    <p><strong>Adam</strong> → Seth → Enosh → Kenan → Mahalalel → Jared → Enoch → Methuselah → Lamech → <strong>Noah</strong> → Shem → Arphaxad → Shelah → Eber → Peleg → Reu → Serug → Nahor → Terah → <strong>Abraham</strong> → Isaac → Jacob (Israel) → <strong>Judah</strong> → Perez → Hezron → Ram → Amminadab → Nahshon → Salmon → Boaz → Obed → Jesse → <strong>David</strong> → Solomon → Rehoboam → ... → <strong>Jesus Christ</strong></p>
+                </div>
             </div>
 
             <div class="tree-card" id="summary">
                 <h2>Summary: What This Genealogy Teaches Us</h2>
-                <p>The biblical family tree is not merely a list of names — it is a story of creation, fall, promise, redemption, and fulfillment. It shows God working through flawed, ordinary people to accomplish extraordinary purposes. The genealogy includes men and women, Jews and Gentiles, saints and sinners — demonstrating that God's redemptive plan extends to all nations and all types of people.</p>
+                <p>The biblical family tree is a story of creation, fall, promise, redemption, and fulfillment. It shows God working through flawed people — Abraham lied, Jacob deceived, David sinned — yet His grace brought forth the Messiah. The genealogy includes Jews and Gentiles, saints and sinners, demonstrating that God's plan extends to all nations.</p>
                 <p style="text-align:center; margin-top:1.5rem;">
-                    <button class="hero-btn primary" onclick="scrollToSection('visual-tree-section')">🎨 View the Complete Visual Tree</button>
+                    <a href="family-tree.html" class="hero-btn primary">🎨 View the Interactive Family Tree Diagram</a>
                 </p>
             </div>
 
             <div class="tree-card" id="about">
                 <h2>About This Study</h2>
-                <p>This comprehensive genealogical study traces the biblical family tree from Adam to Jesus Christ, covering approximately 4,000 years of history. It includes every major patriarch, historical context, theological insights, and an interactive visual diagram.</p>
+                <p>This comprehensive genealogical study traces the biblical family tree from Adam to Jesus Christ, covering approximately 4,000 years of history with historical context, theological insights, and an interactive visual diagram.</p>
             </div>
 
             <footer>
-                <p>The Complete Biblical Family Tree · From Adam to Jesus · Every Generation, Every Story</p>
+                <p>
+                    <a href="index.html">Home</a> | 
+                    <a href="family-tree.html" style="color:#c9a94e;font-weight:bold;">🎨 Visual Family Tree</a> | 
+                    <a href="#study">Full Study</a>
+                </p>
+                <p style="margin-top:0.5rem;">The Complete Biblical Family Tree · From Adam to Jesus · Every Generation, Every Story</p>
             </footer>
         </main>
     </div>
 
     <button class="scroll-top-btn" id="scrollTopBtn" title="Back to top">↑</button>
-
-    <script>
-        // ============ SCROLL TO SECTION ============
-        function scrollToSection(sectionId) {
-            const element = document.getElementById(sectionId);
-            if (element) {
-                const offset = 80;
-                const position = element.getBoundingClientRect().top + window.pageYOffset - offset;
-                window.scrollTo({ top: position, behavior: 'smooth' });
-                updateAllActiveStates(sectionId);
-            }
-        }
-
-        function updateAllActiveStates(sectionId) {
-            document.querySelectorAll('.sidebar-link, .nav-link').forEach(el => {
-                el.classList.remove('active');
-            });
-            document.querySelectorAll(`[onclick*="${sectionId}"]`).forEach(el => {
-                el.classList.add('active');
-            });
-        }
-
-        // ============ SCROLL TO TOP BUTTON ============
-        const scrollTopBtn = document.getElementById('scrollTopBtn');
-        window.addEventListener('scroll', () => {
-            scrollTopBtn.style.opacity = window.pageYOffset > 500 ? '1' : '0';
-            scrollTopBtn.style.pointerEvents = window.pageYOffset > 500 ? 'auto' : 'none';
-        });
-        scrollTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
-
-        // ============ RENDER VISUAL FAMILY TREE ============
-        function renderFamilyTree() {
-            const container = document.getElementById('familyTreeDiagram');
-            if (!container) return;
-
-            const treeData = [
-                { title: 'Creation & Early Patriarchs', subtitle: 'Genesis 1-5', nodes: [
-                    { parents: [{name:'Adam',sub:'930 yrs',type:'male',tip:'First man · Created from dust'},{name:'Eve',sub:'Mother of all',type:'female',tip:'First woman · Mother of all living'}], children: [{name:'Cain',sub:'Farmer',type:'male',tip:'Firstborn · Killed Abel'},{name:'Abel',sub:'Shepherd',type:'male',tip:'Killed by Cain · Righteous'},{name:'Seth',sub:'Appointed',type:'male',tip:'Ancestor of Noah · Godly line'}] },
-                    { parents: [{name:'Seth',sub:'912 yrs',type:'male'}], children: [{name:'Enosh',sub:'905 yrs',type:'male',tip:'People began calling on the LORD'}] },
-                    { parents: [{name:'Enosh',type:'male'},{name:'Kenan',sub:'910 yrs',type:'male'},{name:'Mahalalel',sub:'895 yrs',type:'male'},{name:'Jared',sub:'962 yrs',type:'male'}], children: [] },
-                    { parents: [{name:'Enoch',sub:'365 · Taken',type:'covenant',tip:'Walked with God · Did not die'},{name:'Methuselah',sub:'969 yrs',type:'male',tip:'Longest-lived · Died flood year'},{name:'Lamech',sub:'777 yrs',type:'male',tip:'Father of Noah'}], children: [] }
-                ]},
-                { title: 'Noah & The Flood', subtitle: 'Genesis 6-10', nodes: [
-                    { parents: [{name:'Noah',sub:'950 yrs',type:'covenant',tip:'Built ark · Rainbow covenant'}], children: [{name:'Shem',sub:'600 yrs',type:'male',tip:'Ancestor of Abraham'},{name:'Ham',type:'male',tip:'Ancestor of Canaan'},{name:'Japheth',type:'male',tip:'Ancestor of Gentiles'}] }
-                ]},
-                { title: 'The Patriarchs', subtitle: 'Genesis 12-50', nodes: [
-                    { parents: [{name:'Abraham',sub:'175 yrs',type:'covenant',tip:'Father of nations · Covenant'},{name:'Sarah',sub:'127 yrs',type:'female',tip:'Bore Isaac at 90'}], children: [{name:'Ishmael',sub:'12 sons',type:'male',tip:'Son of Hagar · Arab peoples'},{name:'Isaac',sub:'180 yrs',type:'covenant',tip:'Son of promise · Bound on altar'}] },
-                    { parents: [{name:'Isaac',type:'male'},{name:'Rebekah',type:'female'}], children: [{name:'Esau',sub:'Edom',type:'male',tip:'Sold birthright'},{name:'Jacob',sub:'Israel · 147',type:'covenant',tip:'Wrestled with God · 12 tribes'}] }
-                ]},
-                { title: 'The Twelve Sons of Israel', subtitle: 'Genesis 29-30, 35', nodes: [
-                    { parents: [{name:'Jacob (Israel)',type:'covenant'},{name:'Leah',type:'female'}], children: [{name:'Reuben',sub:'1st',type:'male'},{name:'Simeon',sub:'2nd',type:'male'},{name:'Levi',sub:'3rd',type:'male',tip:'Priestly tribe'},{name:'Judah',sub:'4th',type:'covenant',tip:'Lion · David\'s ancestor · Jesus!'}] },
-                    { parents: [{name:'Rachel',type:'female',tip:'Beloved wife · Died bearing Benjamin'}], children: [{name:'Joseph',sub:'11th',type:'covenant',tip:'Slave to ruler · Forgave brothers'},{name:'Benjamin',sub:'12th',type:'male',tip:'Youngest · Saul & Paul\'s tribe'}] },
-                    { parents: [{name:'Bilhah',type:'female'},{name:'Zilpah',type:'female'}], children: [{name:'Dan',sub:'5th',type:'male'},{name:'Naphtali',sub:'6th',type:'male'},{name:'Gad',sub:'7th',type:'male'},{name:'Asher',sub:'8th',type:'male'}] }
-                ]},
-                { title: 'From Judah to David', subtitle: 'Ruth 4 · Matthew 1', nodes: [
-                    { parents: [{name:'Judah',type:'covenant'},{name:'Tamar',type:'female'}], children: [{name:'Perez',type:'male'},{name:'Hezron',type:'male'},{name:'Ram',type:'male'}] },
-                    { parents: [{name:'Salmon',type:'male'},{name:'Rahab',type:'female',tip:'Canaanite · Former prostitute'}], children: [{name:'Boaz',type:'male',tip:'Kinsman-redeemer'},{name:'Ruth',type:'female',tip:'Moabite · Loyal'}] },
-                    { parents: [{name:'Boaz & Ruth',type:'male'}], children: [{name:'Obed',type:'male'},{name:'Jesse',type:'male'},{name:'DAVID',sub:'King',type:'covenant',tip:'Shepherd king · Eternal throne'}] }
-                ]},
-                { title: 'The Fulfillment', subtitle: 'Matthew 1:16 · Luke 3:23', nodes: [
-                    { parents: [{name:'Joseph',sub:'Legal father',type:'male',tip:'Carpenter · Obeyed angel'},{name:'Mary',sub:'Mother',type:'female',tip:'Virgin · Highly favored'}], children: [{name:'JESUS',sub:'CHRIST',type:'jesus',tip:'Son of God · King of Kings · Savior!'}] }
-                ]}
-            ];
-
-            treeData.forEach(section => {
-                const divider = document.createElement('div');
-                divider.className = 'tree-section-divider';
-                divider.innerHTML = `<h3>${section.title}</h3><p>${section.subtitle}</p>`;
-                container.appendChild(divider);
-
-                section.nodes.forEach(gen => {
-                    if (gen.parents && gen.parents.length > 0) {
-                        const row = document.createElement('div');
-                        row.className = 'tree-generation-row';
-                        gen.parents.forEach((p, i) => {
-                            if (i > 0 && gen.parents.length === 2) {
-                                const sc = document.createElement('div');
-                                sc.className = 'spouse-connector';
-                                row.appendChild(sc);
-                            }
-                            row.appendChild(createNode(p));
-                        });
-                        container.appendChild(row);
-                    }
-
-                    if (gen.children && gen.children.length > 0) {
-                        const conn = document.createElement('div');
-                        conn.className = 'connector-down';
-                        container.appendChild(conn);
-
-                        const childRow = document.createElement('div');
-                        childRow.className = 'tree-generation-row';
-                        childRow.style.gap = '0.8rem';
-                        gen.children.forEach(child => {
-                            childRow.appendChild(createNode(child));
-                        });
-                        container.appendChild(childRow);
-                    }
-                });
-            });
-        }
-
-        function createNode(data) {
-            const node = document.createElement('div');
-            node.className = 'tree-node';
-            
-            const circle = document.createElement('div');
-            circle.className = 'node-circle ' + (data.type || 'male');
-            circle.textContent = data.name.length > 10 ? data.name.substring(0,9) + '…' : data.name;
-            node.appendChild(circle);
-
-            const label = document.createElement('div');
-            label.className = 'node-label';
-            label.textContent = data.name;
-            node.appendChild(label);
-
-            if (data.sub) {
-                const sub = document.createElement('div');
-                sub.className = 'node-sub';
-                sub.textContent = data.sub;
-                node.appendChild(sub);
-            }
-
-            if (data.tip) {
-                const tooltip = document.createElement('div');
-                tooltip.className = 'node-tooltip';
-                tooltip.innerHTML = `<strong>${data.name}</strong>${data.tip}`;
-                node.appendChild(tooltip);
-            }
-
-            return node;
-        }
-
-        // ============ INITIALIZE ============
-        document.addEventListener('DOMContentLoaded', () => {
-            renderFamilyTree();
-            console.log('🌳 Biblical Family Tree ready!');
-            console.log('   ✅ Visual Tree rendered');
-            console.log('   ✅ Navigation working');
-            console.log('   ✅ All buttons connected');
-        });
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
