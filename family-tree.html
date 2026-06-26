@@ -2,280 +2,675 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Biblical Family Tree · From Adam to Jesus</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="Interactive Biblical Family Tree - Visual diagram from Adam to Jesus Christ">
+    <title>Interactive Family Tree · From Adam to Jesus</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body {
-            background: #0d1a12;
-            font-family: system-ui, -apple-system, sans-serif;
-            color: #e0ece0;
-            min-height: 100vh;
+        :root {
+            --bg: #0d1a12;
+            --card-bg: #152318;
+            --text: #e0ece0;
+            --gold: #c9a94e;
+            --emerald: #4a9e6b;
+            --emerald-light: #6bc48a;
+            --line: #2d4a32;
+            --male: #4a7090;
+            --female: #9a6a8a;
+            --node-size: 65px;
+            --font-serif: 'Georgia', 'Times New Roman', serif;
+            --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            --shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
         }
 
-        /* TOP BAR */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg);
+            background-image: 
+                radial-gradient(ellipse at 15% 5%, rgba(74, 158, 107, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 85% 95%, rgba(201, 169, 78, 0.06) 0%, transparent 50%);
+            font-family: var(--font-sans);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ============ TOP NAVIGATION BAR ============ */
         .top-bar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 25px;
-            background: #0a150e;
-            border-bottom: 2px solid #2d4a32;
+            padding: 0.8rem 2rem;
+            background: rgba(10, 21, 14, 0.97);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 2px solid var(--line);
             position: sticky;
             top: 0;
             z-index: 1000;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 0.8rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
         }
-        .top-bar a {
-            color: #c9a94e;
+
+        .top-bar .brand {
+            font-family: var(--font-serif);
+            font-size: 1.2rem;
+            color: var(--gold);
+            font-weight: 700;
             text-decoration: none;
-            font-weight: bold;
-            font-size: 1.1rem;
-        }
-        .top-bar-buttons {
+            letter-spacing: 0.5px;
             display: flex;
-            gap: 10px;
+            align-items: center;
+            gap: 0.4rem;
+            transition: color 0.3s;
+        }
+
+        .top-bar .brand:hover {
+            color: #e0c870;
+        }
+
+        .top-bar .nav-buttons {
+            display: flex;
+            gap: 0.6rem;
             flex-wrap: wrap;
         }
+
         .btn {
-            padding: 10px 20px;
-            border-radius: 25px;
-            border: 2px solid;
-            cursor: pointer;
-            font-weight: bold;
+            padding: 0.55rem 1.3rem;
+            border-radius: 30px;
             font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
             text-decoration: none;
-            display: inline-block;
-            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-family: var(--font-sans);
+            border: 2px solid transparent;
+            white-space: nowrap;
         }
+
         .btn-return {
-            background: #4a9e6b;
+            background: var(--emerald);
             color: white;
-            border-color: #4a9e6b;
+            border-color: var(--emerald);
+            box-shadow: 0 4px 12px rgba(74, 158, 107, 0.3);
         }
-        .btn-return:hover { background: #6bc48a; transform: translateY(-2px); }
+
+        .btn-return:hover {
+            background: var(--emerald-light);
+            border-color: var(--emerald-light);
+            box-shadow: 0 6px 20px rgba(74, 158, 107, 0.5);
+            transform: translateY(-3px);
+        }
+
         .btn-home {
             background: transparent;
-            color: #c9a94e;
-            border-color: #c9a94e;
+            color: var(--gold);
+            border-color: var(--gold);
         }
-        .btn-home:hover { background: rgba(201,169,78,0.15); }
 
-        /* HEADER */
-        .header {
-            text-align: center;
-            padding: 30px 20px;
+        .btn-home:hover {
+            background: rgba(201, 169, 78, 0.15);
+            border-color: #e0c870;
+            box-shadow: 0 4px 16px rgba(201, 169, 78, 0.3);
+            transform: translateY(-3px);
         }
-        .header h1 {
-            font-family: Georgia, serif;
-            font-size: 2.5rem;
-            background: linear-gradient(#e8f5e8, #6bc48a);
+
+        /* ============ HEADER ============ */
+        .tree-header {
+            text-align: center;
+            padding: 2.5rem 1.5rem 1.5rem;
+            background: linear-gradient(180deg, rgba(13, 26, 18, 1) 0%, rgba(13, 26, 18, 0.7) 100%);
+            border-bottom: 1px solid var(--line);
+        }
+
+        .tree-header h1 {
+            font-family: var(--font-serif);
+            font-size: 2.8rem;
+            background: linear-gradient(180deg, #e8f5e8 0%, #a8d8b8 50%, var(--emerald-light) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            filter: drop-shadow(0 2px 8px rgba(74, 158, 107, 0.4));
+            margin-bottom: 0.5rem;
+            line-height: 1.2;
         }
-        .header p { color: #7a9476; font-style: italic; margin-top: 5px; }
 
-        /* LEGEND */
-        .legend {
+        .tree-header p {
+            color: #7a9476;
+            font-style: italic;
+            font-size: 1.05rem;
+            letter-spacing: 0.3px;
+        }
+
+        /* ============ LEGEND ============ */
+        .legend-section {
             display: flex;
             justify-content: center;
-            gap: 20px;
-            padding: 15px;
+            align-items: center;
+            gap: 1.5rem;
+            padding: 1.2rem 1.5rem;
             flex-wrap: wrap;
-            background: rgba(21,35,24,0.6);
-            border-bottom: 1px solid #2d4a32;
+            background: rgba(21, 35, 24, 0.5);
+            border-bottom: 1px solid var(--line);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
             font-size: 0.85rem;
+            color: #bccdb8;
+            font-weight: 500;
         }
-        .legend-item { display: flex; align-items: center; gap: 6px; }
+
         .legend-dot {
-            width: 14px; height: 14px; border-radius: 50%; border: 2px solid;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            display: inline-block;
+            border: 2px solid;
+            flex-shrink: 0;
         }
-        .legend-dot.male { background: #1a2a38; border-color: #5a8aaa; }
-        .legend-dot.female { background: #2a1a28; border-color: #9a6a8a; }
-        .legend-dot.covenant { background: #2a2410; border-color: #c9a94e; box-shadow: 0 0 8px rgba(201,169,78,0.5); }
-        .legend-dot.jesus { background: #3a3000; border-color: #ffd700; box-shadow: 0 0 15px rgba(255,215,0,0.7); animation: pulse 2s infinite; }
-        @keyframes pulse { 0%,100%{box-shadow:0 0 12px rgba(255,215,0,0.5);} 50%{box-shadow:0 0 25px rgba(255,215,0,0.9);} }
 
-        /* QUICK JUMP */
+        .legend-dot.male {
+            background: #1a2a38;
+            border-color: #5a8aaa;
+        }
+
+        .legend-dot.female {
+            background: #2a1a28;
+            border-color: #9a6a8a;
+        }
+
+        .legend-dot.covenant {
+            background: #2a2410;
+            border-color: #c9a94e;
+            box-shadow: 0 0 10px rgba(201, 169, 78, 0.5);
+        }
+
+        .legend-dot.jesus {
+            background: #3a3000;
+            border-color: #ffd700;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.7);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 12px rgba(255, 215, 0, 0.5); }
+            50% { box-shadow: 0 0 25px rgba(255, 215, 0, 0.9); }
+        }
+
+        .legend-item .legend-icon {
+            font-size: 1rem;
+        }
+
+        /* ============ QUICK JUMP ============ */
         .jump-nav {
-            display: flex; justify-content: center; gap: 8px; padding: 15px;
-            flex-wrap: wrap; background: rgba(15,25,18,0.5);
+            display: flex;
+            justify-content: center;
+            gap: 0.6rem;
+            padding: 1rem;
+            flex-wrap: wrap;
+            background: rgba(15, 25, 18, 0.4);
+            border-bottom: 1px solid var(--line);
         }
-        .jump-nav button {
-            padding: 8px 16px; border-radius: 20px; border: 1px solid #2d4a32;
-            background: #152318; color: #e0ece0; cursor: pointer; font-size: 0.8rem; transition: 0.3s;
-        }
-        .jump-nav button:hover { border-color: #4a9e6b; background: #1a2c1e; }
 
-        /* TREE */
+        .jump-nav button {
+            padding: 0.5rem 1.1rem;
+            border-radius: 25px;
+            border: 1px solid var(--line);
+            background: var(--card-bg);
+            color: var(--text);
+            cursor: pointer;
+            font-size: 0.82rem;
+            font-weight: 500;
+            transition: all 0.3s;
+            white-space: nowrap;
+            font-family: var(--font-sans);
+        }
+
+        .jump-nav button:hover {
+            border-color: var(--emerald);
+            background: #1a2c1e;
+            color: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        /* ============ TREE CONTAINER ============ */
         .tree-container {
-            display: flex; flex-direction: column; align-items: center;
-            padding: 30px 20px; gap: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem 1.5rem;
+            gap: 3rem;
+            max-width: 1100px;
+            margin: 0 auto;
         }
 
         .section-block {
-            width: 100%; max-width: 1000px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
-        .section-title {
-            text-align: center; padding: 20px; margin: 10px 0 25px;
-            border-top: 2px solid #2d4a32; border-bottom: 2px solid #2d4a32;
-        }
-        .section-title h2 { font-family: Georgia, serif; color: #c9a94e; font-size: 1.4rem; }
-        .section-title p { color: #7a9476; font-size: 0.8rem; }
 
+        .section-title {
+            text-align: center;
+            padding: 1.5rem 2rem;
+            margin: 0.5rem 0 2.5rem;
+            border-top: 2px solid var(--line);
+            border-bottom: 2px solid var(--line);
+            width: 100%;
+            max-width: 700px;
+            background: rgba(21, 35, 24, 0.25);
+            border-radius: 4px;
+        }
+
+        .section-title h2 {
+            font-family: var(--font-serif);
+            color: var(--gold);
+            font-size: 1.4rem;
+            letter-spacing: 0.8px;
+            margin-bottom: 0.3rem;
+        }
+
+        .section-title p {
+            color: #7a9476;
+            font-size: 0.82rem;
+            font-style: italic;
+        }
+
+        /* ============ FAMILY GROUP ============ */
         .family-group {
-            display: flex; flex-direction: column; align-items: center;
-            margin: 30px 0; gap: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 1.5rem 0;
+            gap: 0;
         }
 
         .parents-row {
-            display: flex; align-items: center; justify-content: center;
-            gap: 0; flex-wrap: wrap;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+            flex-wrap: wrap;
+        }
+
+        .spouse-ring {
+            font-size: 1.5rem;
+            margin: 0 4px;
+            align-self: center;
+            color: var(--gold);
+            text-shadow: 0 0 6px rgba(201, 169, 78, 0.5);
+            animation: gentleBounce 2s ease-in-out infinite;
+        }
+
+        @keyframes gentleBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-4px); }
         }
 
         .parent-node {
-            display: flex; flex-direction: column; align-items: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             margin: 0 8px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+
+        .parent-node:hover {
+            transform: translateY(-8px);
+            z-index: 5;
         }
 
         .node-circle {
-            width: 65px; height: 65px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-weight: bold; font-size: 0.75rem; text-align: center;
-            border: 3px solid #2d4a32; background: #152318; color: #e0ece0;
-            cursor: pointer; transition: all 0.3s; position: relative;
-            padding: 5px; line-height: 1.1;
+            width: var(--node-size);
+            height: var(--node-size);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.75rem;
+            text-align: center;
+            border: 3px solid var(--line);
+            background: var(--card-bg);
+            color: #e0ece0;
+            transition: all 0.3s ease;
+            position: relative;
+            padding: 4px;
+            line-height: 1.1;
+            word-break: break-word;
         }
-        .node-circle.male { border-color: #5a8aaa; background: #1a2a38; }
-        .node-circle.female { border-color: #9a6a8a; background: #2a1a28; }
-        .node-circle.covenant { border-color: #c9a94e; background: #2a2410; box-shadow: 0 0 12px rgba(201,169,78,0.4); }
-        .node-circle.jesus { border-color: #ffd700; background: #3a3000; box-shadow: 0 0 22px rgba(255,215,0,0.7); }
-        .node-circle:hover { transform: scale(1.15); border-color: #4a9e6b; box-shadow: 0 0 20px rgba(74,158,107,0.6); z-index: 5; }
-        .node-circle.jesus:hover { box-shadow: 0 0 35px rgba(255,215,0,0.9); }
-        .node-name { font-size: 0.8rem; margin-top: 5px; text-align: center; color: #bccdb8; font-weight: bold; }
-        .node-sub { font-size: 0.65rem; color: #7a9476; text-align: center; }
 
-        .spouse-ring {
-            font-size: 1.2rem; margin: 0 5px; align-self: center; color: #c9a94e;
+        .node-circle.male {
+            border-color: #5a8aaa;
+            background: #1a2a38;
+            color: #c8ddf0;
         }
 
-        /* Vertical line from parents to children */
+        .node-circle.female {
+            border-color: #9a6a8a;
+            background: #2a1a28;
+            color: #e8d0e0;
+        }
+
+        .node-circle.covenant {
+            border-color: #c9a94e;
+            background: #2a2410;
+            color: #f0e0a0;
+            box-shadow: 0 0 15px rgba(201, 169, 78, 0.4);
+        }
+
+        .node-circle.jesus {
+            border-color: #ffd700;
+            background: #3a3000;
+            color: #fff8d0;
+            box-shadow: 0 0 25px rgba(255, 215, 0, 0.7);
+            font-size: 0.8rem;
+            animation: jesusGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes jesusGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.6); }
+            50% { box-shadow: 0 0 35px rgba(255, 215, 0, 0.9); }
+        }
+
+        .node-circle:hover {
+            border-color: var(--emerald);
+            box-shadow: 0 0 22px rgba(74, 158, 107, 0.6);
+            transform: scale(1.12);
+        }
+
+        .node-circle.jesus:hover {
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.9);
+            transform: scale(1.18);
+        }
+
+        .node-name {
+            margin-top: 0.5rem;
+            font-size: 0.82rem;
+            text-align: center;
+            color: #bccdb8;
+            font-weight: 600;
+            max-width: 90px;
+            line-height: 1.2;
+        }
+
+        .node-sub {
+            font-size: 0.65rem;
+            color: #7a9476;
+            text-align: center;
+            max-width: 90px;
+            font-style: italic;
+        }
+
+        /* ============ TOOLTIP ============ */
+        .tooltip-box {
+            display: none;
+            position: absolute;
+            bottom: calc(100% + 14px);
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a2c1e;
+            border: 2px solid var(--emerald);
+            border-radius: 12px;
+            padding: 0.9rem 1.1rem;
+            font-size: 0.8rem;
+            white-space: normal;
+            width: 230px;
+            z-index: 50;
+            pointer-events: none;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+            color: #e0ece0;
+            line-height: 1.4;
+        }
+
+        .tooltip-box strong {
+            color: var(--gold);
+            display: block;
+            margin-bottom: 0.3rem;
+            font-size: 0.9rem;
+            font-family: var(--font-serif);
+        }
+
+        .node-circle:hover .tooltip-box {
+            display: block;
+        }
+
+        /* ============ CONNECTING LINES ============ */
         .line-down {
-            width: 3px; height: 40px; background: #2d4a32; margin: 0 auto;
+            width: 3px;
+            height: 35px;
+            background: var(--line);
+            margin: 0 auto;
+            position: relative;
         }
-        
-        /* Horizontal line above children */
-        .line-across {
-            height: 3px; background: #2d4a32; min-width: 60px;
+
+        .line-down::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 8px;
+            height: 8px;
+            background: var(--line);
+            border-radius: 50%;
         }
 
         .children-row {
-            display: flex; align-items: flex-start; justify-content: center;
-            gap: 15px; flex-wrap: wrap; margin-top: 0;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 0;
         }
 
         .child-wrapper {
-            display: flex; flex-direction: column; align-items: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
+
         .child-line-down {
-            width: 3px; height: 20px; background: #2d4a32; margin: 0 auto;
+            width: 3px;
+            height: 18px;
+            background: var(--line);
+            margin: 0 auto;
         }
 
-        .tooltip-box {
-            display: none; position: absolute; bottom: calc(100% + 10px);
-            left: 50%; transform: translateX(-50%);
-            background: #1a2c1e; border: 2px solid #4a9e6b; border-radius: 10px;
-            padding: 10px 14px; font-size: 0.78rem; white-space: normal;
-            width: 220px; z-index: 50; pointer-events: none;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.6); color: #e0ece0;
+        /* ============ BACK TO TOP ============ */
+        .back-top-btn {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--emerald);
+            color: white;
+            border: 2px solid rgba(201, 169, 78, 0.4);
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            font-size: 1.3rem;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
         }
-        .tooltip-box strong { color: #c9a94e; display: block; margin-bottom: 4px; font-size: 0.9rem; }
-        .node-circle:hover .tooltip-box { display: block; }
 
-        /* BACK TO TOP */
-        .back-top {
-            position: fixed; bottom: 25px; right: 25px;
-            background: #4a9e6b; color: white; border: 2px solid rgba(201,169,78,0.4);
-            border-radius: 50%; width: 48px; height: 48px; font-size: 1.3rem;
-            cursor: pointer; z-index: 99; display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 6px 18px rgba(0,0,0,0.5); transition: 0.3s; opacity: 0; pointer-events: none;
+        .back-top-btn:hover {
+            background: var(--emerald-light);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.6);
         }
-        .back-top:hover { background: #6bc48a; transform: translateY(-4px); }
 
-        /* FOOTER */
-        .footer {
-            text-align: center; padding: 25px; border-top: 1px solid #2d4a32;
-            margin-top: 40px; color: #7a9476;
+        /* ============ FOOTER ============ */
+        .tree-footer {
+            text-align: center;
+            padding: 2rem;
+            color: #7a9476;
+            border-top: 1px solid var(--line);
+            margin-top: 2rem;
+            font-size: 0.9rem;
         }
-        .footer a { color: #c9a94e; font-weight: bold; text-decoration: none; }
-        .footer a:hover { text-decoration: underline; }
 
-        @media (max-width: 700px) {
-            .header h1 { font-size: 1.6rem; }
-            .node-circle { width: 50px; height: 50px; font-size: 0.65rem; }
-            .node-name { font-size: 0.7rem; }
-            .top-bar { flex-direction: column; text-align: center; }
-            .children-row { gap: 8px; }
+        .tree-footer a {
+            color: var(--gold);
+            font-weight: 700;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .tree-footer a:hover {
+            color: #e0c870;
+            text-decoration: underline;
+        }
+
+        /* ============ RESPONSIVE ============ */
+        @media (max-width: 768px) {
+            :root {
+                --node-size: 50px;
+            }
+
+            .tree-header h1 {
+                font-size: 1.8rem;
+            }
+
+            .top-bar {
+                flex-direction: column;
+                text-align: center;
+                padding: 0.6rem 1rem;
+            }
+
+            .top-bar .nav-buttons {
+                justify-content: center;
+            }
+
+            .btn {
+                padding: 0.45rem 1rem;
+                font-size: 0.8rem;
+            }
+
+            .legend-section {
+                gap: 0.8rem;
+            }
+
+            .legend-item {
+                font-size: 0.72rem;
+            }
+
+            .jump-nav button {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.7rem;
+            }
+
+            .children-row {
+                gap: 0.5rem;
+            }
+
+            .node-name {
+                font-size: 0.7rem;
+                max-width: 65px;
+            }
+
+            .node-sub {
+                font-size: 0.6rem;
+                max-width: 65px;
+            }
+
+            .tooltip-box {
+                width: 180px;
+                font-size: 0.7rem;
+            }
         }
     </style>
 </head>
 <body>
-
     <!-- ============ TOP NAVIGATION BAR ============ -->
-    <div class="top-bar">
-        <a href="index.html">🌳 Biblical Family Tree</a>
-        <div class="top-bar-buttons">
+    <nav class="top-bar">
+        <a href="index.html" class="brand">🌳 Biblical Family Tree</a>
+        <div class="nav-buttons">
             <a href="index.html" class="btn btn-return">🏠 Return to Main Study Page</a>
             <a href="index.html" class="btn btn-home">📖 Read Full Study</a>
         </div>
-    </div>
+    </nav>
 
     <!-- ============ HEADER ============ -->
-    <div class="header">
+    <header class="tree-header">
         <h1>🌳 The Biblical Family Tree</h1>
-        <p>From Adam to Jesus Christ — Every generation visually connected</p>
-    </div>
+        <p>From Adam to Jesus Christ — An Interactive Visual Genealogy</p>
+    </header>
 
     <!-- ============ LEGEND ============ -->
-    <div class="legend">
-        <div class="legend-item"><span class="legend-dot male"></span> Blue = Male</div>
-        <div class="legend-item"><span class="legend-dot female"></span> Purple = Female</div>
-        <div class="legend-item"><span class="legend-dot covenant"></span> Gold Ring = Covenant Figure</div>
-        <div class="legend-item"><span class="legend-dot jesus"></span> Glowing Gold = Jesus Christ</div>
-        <div class="legend-item">💍 = Spouse Connection</div>
-        <div class="legend-item">💡 Hover over circles for details!</div>
+    <div class="legend-section">
+        <div class="legend-item">
+            <span class="legend-dot male"></span> <strong>Blue</strong> = Male
+        </div>
+        <div class="legend-item">
+            <span class="legend-dot female"></span> <strong>Purple</strong> = Female
+        </div>
+        <div class="legend-item">
+            <span class="legend-dot covenant"></span> <strong>Gold Ring</strong> = Covenant Figure
+        </div>
+        <div class="legend-item">
+            <span class="legend-dot jesus"></span> <strong>Glowing Gold</strong> = Jesus Christ
+        </div>
+        <div class="legend-item">
+            <span class="legend-icon">💍</span> = Spouse Connection
+        </div>
+        <div class="legend-item">
+            <span class="legend-icon">💡</span> <em>Hover over circles for details!</em>
+        </div>
     </div>
 
-    <!-- ============ QUICK JUMP ============ -->
+    <!-- ============ QUICK JUMP NAVIGATION ============ -->
     <div class="jump-nav">
-        <button onclick="document.getElementById('sec1').scrollIntoView({behavior:'smooth',block:'center'})">🌍 Creation</button>
-        <button onclick="document.getElementById('sec2').scrollIntoView({behavior:'smooth',block:'center'})">🚢 Noah</button>
-        <button onclick="document.getElementById('sec3').scrollIntoView({behavior:'smooth',block:'center'})">📜 Shem→Abraham</button>
-        <button onclick="document.getElementById('sec4').scrollIntoView({behavior:'smooth',block:'center'})">⭐ Patriarchs</button>
-        <button onclick="document.getElementById('sec5').scrollIntoView({behavior:'smooth',block:'center'})">👑 12 Sons</button>
-        <button onclick="document.getElementById('sec6').scrollIntoView({behavior:'smooth',block:'center'})">🦁 Judah→David</button>
-        <button onclick="document.getElementById('sec7').scrollIntoView({behavior:'smooth',block:'center'})">✝️ Jesus</button>
+        <button onclick="document.getElementById('sec-creation').scrollIntoView({behavior:'smooth',block:'center'})">🌍 Creation & Patriarchs</button>
+        <button onclick="document.getElementById('sec-noah').scrollIntoView({behavior:'smooth',block:'center'})">🚢 Noah & Flood</button>
+        <button onclick="document.getElementById('sec-shem').scrollIntoView({behavior:'smooth',block:'center'})">📜 Shem to Abraham</button>
+        <button onclick="document.getElementById('sec-patriarchs').scrollIntoView({behavior:'smooth',block:'center'})">⭐ The Patriarchs</button>
+        <button onclick="document.getElementById('sec-twelve').scrollIntoView({behavior:'smooth',block:'center'})">👑 Twelve Sons</button>
+        <button onclick="document.getElementById('sec-david').scrollIntoView({behavior:'smooth',block:'center'})">🦁 Judah to David</button>
+        <button onclick="document.getElementById('sec-jesus').scrollIntoView({behavior:'smooth',block:'center'})">✝️ Jesus Christ</button>
     </div>
 
     <!-- ============ THE TREE ============ -->
     <div class="tree-container" id="treeRoot">
-        <!-- All sections are generated by JavaScript below -->
+        <!-- Built by JavaScript -->
     </div>
 
     <!-- ============ FOOTER ============ -->
-    <div class="footer">
-        <p><a href="index.html">🏠 Return to Main Study Page</a> | <a href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">⬆ Back to Top</a></p>
-        <p style="margin-top:8px;">🌳 The Complete Biblical Family Tree · From Adam to Jesus Christ · Hover over circles for details</p>
+    <div class="tree-footer">
+        <p>
+            <a href="index.html">🏠 Return to Main Study Page</a>
+            &nbsp;|&nbsp;
+            <a href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">⬆ Back to Top</a>
+        </p>
+        <p style="margin-top:0.5rem;">🌳 The Complete Biblical Family Tree · From Adam to Jesus Christ · Hover over circles for details</p>
     </div>
 
     <!-- ============ BACK TO TOP BUTTON ============ -->
-    <button class="back-top" id="backTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+    <button class="back-top-btn" id="backTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">↑</button>
 
     <script>
-        // Show/hide back to top button
+        // ============ BACK TO TOP BUTTON VISIBILITY ============
         window.addEventListener('scroll', function() {
             var btn = document.getElementById('backTopBtn');
             if (window.pageYOffset > 400) {
@@ -290,55 +685,51 @@
         // ============ BUILD THE TREE ============
         function buildTree() {
             var container = document.getElementById('treeRoot');
-            
-            // Helper to create a node circle
+            container.innerHTML = '';
+
+            // ----- HELPER: Create a node -----
             function makeNode(name, sub, type, tooltip) {
                 var wrap = document.createElement('div');
                 wrap.className = 'parent-node';
                 wrap.style.position = 'relative';
-                
+
                 var circle = document.createElement('div');
                 circle.className = 'node-circle ' + (type || 'male');
-                // Shorten name for circle
-                var shortName = name;
-                if (shortName.length > 10) shortName = shortName.substring(0,9) + '..';
+                var shortName = name.length > 10 ? name.substring(0, 9) + '..' : name;
                 circle.textContent = shortName;
-                
-                // Tooltip
+
                 if (tooltip) {
                     var tip = document.createElement('div');
                     tip.className = 'tooltip-box';
                     tip.innerHTML = '<strong>' + name + '</strong>' + tooltip;
                     circle.appendChild(tip);
                 }
-                
+
                 wrap.appendChild(circle);
-                
+
                 var nameEl = document.createElement('div');
                 nameEl.className = 'node-name';
                 nameEl.textContent = name;
                 wrap.appendChild(nameEl);
-                
+
                 if (sub) {
                     var subEl = document.createElement('div');
                     subEl.className = 'node-sub';
                     subEl.textContent = sub;
                     wrap.appendChild(subEl);
                 }
-                
+
                 return wrap;
             }
 
-            // Helper to create a family group (parents + children)
-            function makeFamily(parents, children, sectionId) {
+            // ----- HELPER: Create a family group (parents + children) -----
+            function makeFamily(parents, children) {
                 var group = document.createElement('div');
                 group.className = 'family-group';
-                if (sectionId) group.id = sectionId;
 
                 // Parents row
                 var parentsRow = document.createElement('div');
                 parentsRow.className = 'parents-row';
-                
                 parents.forEach(function(p, i) {
                     if (i > 0 && parents.length === 2) {
                         var ring = document.createElement('span');
@@ -348,10 +739,9 @@
                     }
                     parentsRow.appendChild(makeNode(p.name, p.sub, p.type, p.tooltip));
                 });
-                
                 group.appendChild(parentsRow);
 
-                // Line down
+                // Line down to children
                 if (children && children.length > 0) {
                     var lineDown = document.createElement('div');
                     lineDown.className = 'line-down';
@@ -360,26 +750,22 @@
                     // Children row
                     var childrenRow = document.createElement('div');
                     childrenRow.className = 'children-row';
-                    
                     children.forEach(function(child) {
                         var childWrap = document.createElement('div');
                         childWrap.className = 'child-wrapper';
-                        
-                        var childLineDown = document.createElement('div');
-                        childLineDown.className = 'child-line-down';
-                        childWrap.appendChild(childLineDown);
-                        
+                        var childLine = document.createElement('div');
+                        childLine.className = 'child-line-down';
+                        childWrap.appendChild(childLine);
                         childWrap.appendChild(makeNode(child.name, child.sub, child.type, child.tooltip));
                         childrenRow.appendChild(childWrap);
                     });
-                    
                     group.appendChild(childrenRow);
                 }
 
                 return group;
             }
 
-            // Helper to create a section
+            // ----- HELPER: Create a section -----
             function makeSection(id, title, subtitle, families) {
                 var section = document.createElement('div');
                 section.className = 'section-block';
@@ -398,201 +784,192 @@
             }
 
             // ============ SECTION 1: CREATION & EARLY PATRIARCHS ============
-            var sec1 = makeSection('sec1', 'Creation & Early Patriarchs', 'Genesis 1-5 · Adam through the Pre-Flood Generations', [
+            container.appendChild(makeSection('sec-creation', 'Creation & Early Patriarchs', 'Genesis 1-5 · Adam through the Pre-Flood Generations', [
                 makeFamily(
                     [
-                        {name:'Adam', sub:'930 yrs', type:'male', tooltip:'First man · Created from dust · Lived in Garden of Eden · Father of all humanity'},
-                        {name:'Eve', sub:'Mother of all', type:'female', tooltip:'First woman · Created from Adam\'s rib · "Mother of all living" · Named Chavah (Life)'}
+                        {name: 'Adam', sub: '930 yrs', type: 'male', tooltip: 'First man · Created from dust · Lived in Garden of Eden · Father of all humanity'},
+                        {name: 'Eve', sub: 'Mother of all', type: 'female', tooltip: 'First woman · Created from Adam\'s rib · "Mother of all living"'}
                     ],
                     [
-                        {name:'Cain', sub:'Farmer', type:'male', tooltip:'Firstborn son · Farmer · Killed his brother Abel · Marked by God · Built first city'},
-                        {name:'Abel', sub:'Shepherd', type:'male', tooltip:'Second son · Shepherd · Offered pleasing sacrifice · Murdered by Cain · First martyr'},
-                        {name:'Seth', sub:'912 yrs', type:'male', tooltip:'Third son · "Appointed" by God · Ancestor of Noah and the faithful line'}
+                        {name: 'Cain', sub: 'Farmer', type: 'male', tooltip: 'Firstborn · Farmer · Killed Abel · Marked by God · Built first city'},
+                        {name: 'Abel', sub: 'Shepherd', type: 'male', tooltip: 'Second son · Shepherd · Offered pleasing sacrifice · Murdered by Cain'},
+                        {name: 'Seth', sub: '912 yrs', type: 'male', tooltip: 'Third son · "Appointed" · Ancestor of Noah and the faithful line'}
                     ]
                 ),
                 makeFamily(
-                    [
-                        {name:'Seth', sub:'912 yrs', type:'male', tooltip:'Son of Adam · Ancestor of the godly line'}
-                    ],
-                    [
-                        {name:'Enosh', sub:'905 yrs', type:'male', tooltip:'Son of Seth · During his life people began to call on the name of the LORD'}
-                    ]
+                    [{name: 'Seth', sub: '912 yrs', type: 'male', tooltip: 'Son of Adam · Ancestor of the godly line'}],
+                    [{name: 'Enosh', sub: '905 yrs', type: 'male', tooltip: 'Son of Seth · People began calling on the name of the LORD during his life'}]
                 ),
                 makeFamily(
                     [
-                        {name:'Enosh', type:'male', tooltip:''},
-                        {name:'Kenan', sub:'910 yrs', type:'male', tooltip:''},
-                        {name:'Mahalalel', sub:'895 yrs', type:'male', tooltip:''},
-                        {name:'Jared', sub:'962 yrs', type:'male', tooltip:'Father of Enoch · Second longest lifespan'}
+                        {name: 'Enosh', type: 'male', tooltip: ''},
+                        {name: 'Kenan', sub: '910 yrs', type: 'male', tooltip: ''},
+                        {name: 'Mahalalel', sub: '895 yrs', type: 'male', tooltip: 'Name may mean "praise of God"'},
+                        {name: 'Jared', sub: '962 yrs', type: 'male', tooltip: 'Second longest lifespan · Father of Enoch'}
                     ],
                     []
                 ),
                 makeFamily(
                     [
-                        {name:'Enoch', sub:'365 yrs', type:'covenant', tooltip:'Walked faithfully with God · Did NOT die · God took him directly to heaven · Prophet of coming judgment'},
-                        {name:'Methuselah', sub:'969 yrs', type:'male', tooltip:'Longest-lived human · 969 years · Name may mean "when he dies it shall be sent" · Died year of Flood'},
-                        {name:'Lamech', sub:'777 yrs', type:'male', tooltip:'Father of Noah · Named him "comfort" · Recognized the curse on the ground'}
+                        {name: 'Enoch', sub: '365 yrs', type: 'covenant', tooltip: 'Walked faithfully with God · Did NOT die · God took him directly to heaven! · Prophet of coming judgment'},
+                        {name: 'Methuselah', sub: '969 yrs', type: 'male', tooltip: 'Longest-lived human ever · 969 years · Died in the year of the Flood'},
+                        {name: 'Lamech', sub: '777 yrs', type: 'male', tooltip: 'Father of Noah · Named him "comfort" · Recognized the curse on the ground'}
                     ],
                     []
                 )
-            ]);
-            container.appendChild(sec1);
+            ]));
 
             // ============ SECTION 2: NOAH ============
-            var sec2 = makeSection('sec2', 'Noah & The Great Flood', 'Genesis 6-10 · The Ark, The Flood, The Rainbow Covenant', [
+            container.appendChild(makeSection('sec-noah', 'Noah & The Great Flood', 'Genesis 6-10 · The Ark, The Flood, The Rainbow Covenant', [
                 makeFamily(
                     [
-                        {name:'Noah', sub:'950 yrs', type:'covenant', tooltip:'Righteous man · Blameless in his generation · Walked with God · Built the ark · Saved his family · Received rainbow covenant'}
+                        {name: 'Noah', sub: '950 yrs', type: 'covenant', tooltip: 'Righteous man · Blameless · Walked with God · Built the ark · Saved his family · Received rainbow covenant'}
                     ],
                     [
-                        {name:'Shem', sub:'600 yrs', type:'male', tooltip:'Ancestor of Abraham and Semitic peoples · The covenant line · Lived to see 9 generations'},
-                        {name:'Ham', sub:'Father of Canaan', type:'male', tooltip:'Saw Noah\'s nakedness · Father of Canaan (cursed) · Ancestor of African peoples · Also ancestor of Nimrod'},
-                        {name:'Japheth', sub:'Eldest?', type:'male', tooltip:'Blessed with Shem · Ancestor of European & Asian peoples · "May he dwell in Shem\'s tents"'}
+                        {name: 'Shem', sub: '600 yrs', type: 'male', tooltip: 'Ancestor of Abraham · The covenant line · Lived to see 9 generations · Semitic peoples'},
+                        {name: 'Ham', sub: 'Father of Canaan', type: 'male', tooltip: 'Saw Noah\'s nakedness · Father of cursed Canaan · Ancestor of African peoples'},
+                        {name: 'Japheth', sub: 'Eldest?', type: 'male', tooltip: 'Blessed with Shem · Ancestor of European & Asian peoples · "Dwell in Shem\'s tents"'}
                     ]
                 )
-            ]);
-            container.appendChild(sec2);
+            ]));
 
             // ============ SECTION 3: SHEM TO ABRAHAM ============
-            var sec3 = makeSection('sec3', 'From Shem to Abraham', 'Genesis 11 · The Line of Promise', [
+            container.appendChild(makeSection('sec-shem', 'From Shem to Abraham', 'Genesis 11 · The Line of Promise Through Shem', [
                 makeFamily(
                     [
-                        {name:'Shem', type:'male', tooltip:'Son of Noah · Ancestor of the Semites'},
-                        {name:'Arphaxad', sub:'438 yrs', type:'male', tooltip:'Born 2 years after Flood'},
-                        {name:'Shelah', type:'male', tooltip:''},
-                        {name:'Eber', sub:'"Hebrew"', type:'male', tooltip:'His name gives us "Hebrew" · Ancestor of Hebrew people'},
-                        {name:'Peleg', sub:'239 yrs', type:'male', tooltip:'In his days the earth was divided (Tower of Babel)'},
-                        {name:'Reu', type:'male', tooltip:''},
-                        {name:'Serug', type:'male', tooltip:''},
-                        {name:'Nahor', type:'male', tooltip:'Grandfather of Abraham'},
-                        {name:'Terah', sub:'205 yrs', type:'male', tooltip:'Father of Abraham · Left Ur for Canaan · Stopped in Harran and died there'}
+                        {name: 'Shem', type: 'male', tooltip: 'Son of Noah'},
+                        {name: 'Arphaxad', sub: '438 yrs', type: 'male', tooltip: 'Born 2 years after the Flood'},
+                        {name: 'Shelah', type: 'male', tooltip: ''},
+                        {name: 'Eber', sub: '"Hebrew"', type: 'male', tooltip: 'His name gives us the word "Hebrew"'},
+                        {name: 'Peleg', sub: '239 yrs', type: 'male', tooltip: 'In his days the earth was divided (Tower of Babel)'},
+                        {name: 'Reu', type: 'male', tooltip: ''},
+                        {name: 'Serug', type: 'male', tooltip: ''},
+                        {name: 'Nahor', type: 'male', tooltip: 'Grandfather of Abraham'},
+                        {name: 'Terah', sub: '205 yrs', type: 'male', tooltip: 'Father of Abraham · Left Ur · Died in Harran'}
                     ],
                     []
                 )
-            ]);
-            container.appendChild(sec3);
+            ]));
 
             // ============ SECTION 4: THE PATRIARCHS ============
-            var sec4 = makeSection('sec4', 'The Patriarchs — Abraham, Isaac & Jacob', 'Genesis 12-36 · The Covenant Fathers', [
+            container.appendChild(makeSection('sec-patriarchs', 'The Patriarchs — Abraham, Isaac & Jacob', 'Genesis 12-36 · The Covenant Fathers of Israel', [
                 makeFamily(
                     [
-                        {name:'Abraham', sub:'175 yrs', type:'covenant', tooltip:'Father of many nations · Received covenant: land, seed, blessing · Tested with Isaac · Friend of God · Revered by Jews, Christians & Muslims'},
-                        {name:'Sarah', sub:'127 yrs', type:'female', tooltip:'Wife of Abraham · Barren until 90 · Bore Isaac miraculously · Buried in Cave of Machpelah'}
+                        {name: 'Abraham', sub: '175 yrs', type: 'covenant', tooltip: 'Father of many nations · Received covenant: land, seed, blessing · Tested with Isaac · Friend of God'},
+                        {name: 'Sarah', sub: '127 yrs', type: 'female', tooltip: 'Wife of Abraham · Barren until age 90 · Bore Isaac miraculously · Buried in Machpelah'}
                     ],
                     [
-                        {name:'Ishmael', sub:'137 yrs', type:'male', tooltip:'Son of Hagar · Firstborn · Blessed to be great nation · 12 sons · Ancestor of Arab peoples'},
-                        {name:'Isaac', sub:'180 yrs', type:'covenant', tooltip:'Son of Promise · "He laughs" · Bound on altar at Moriah · Married Rebekah · Father of twins'}
+                        {name: 'Ishmael', sub: '137 yrs', type: 'male', tooltip: 'Son of Hagar · Firstborn · 12 sons · Ancestor of Arab peoples'},
+                        {name: 'Isaac', sub: '180 yrs', type: 'covenant', tooltip: 'Son of Promise · "He laughs" · Bound on altar · Married Rebekah'}
                     ]
                 ),
                 makeFamily(
                     [
-                        {name:'Isaac', type:'male', tooltip:'Son of Abraham · Husband of Rebekah'},
-                        {name:'Rebekah', sub:'Wife', type:'female', tooltip:'Chosen by God · Left family for Isaac · Mother of twins · Favored Jacob'}
+                        {name: 'Isaac', type: 'male', tooltip: 'Son of Abraham · Husband of Rebekah'},
+                        {name: 'Rebekah', sub: 'Wife of Isaac', type: 'female', tooltip: 'Chosen by God · Left family for Isaac · Mother of twins · Favored Jacob'}
                     ],
                     [
-                        {name:'Esau', sub:'Edom', type:'male', tooltip:'Firstborn twin · Red & hairy · Hunter · Sold birthright for stew · Ancestor of Edomites'},
-                        {name:'Jacob', sub:'Israel · 147', type:'covenant', tooltip:'Younger twin · "Heel-grabber" · Dreamed of ladder · Wrestled with God · Renamed ISRAEL · Father of 12 tribes'}
+                        {name: 'Esau', sub: 'Edom', type: 'male', tooltip: 'Firstborn twin · Red & hairy · Hunter · Sold birthright · Ancestor of Edomites'},
+                        {name: 'Jacob', sub: 'Israel · 147 yrs', type: 'covenant', tooltip: 'Younger twin · "Heel-grabber" · Dreamed of ladder · Wrestled with God · Renamed ISRAEL · Father of 12 tribes'}
                     ]
                 )
-            ]);
-            container.appendChild(sec4);
+            ]));
 
             // ============ SECTION 5: TWELVE SONS ============
-            var sec5 = makeSection('sec5', 'The Twelve Sons of Israel (Jacob)', 'Genesis 29-30, 35, 49 · Founders of the Twelve Tribes', [
+            container.appendChild(makeSection('sec-twelve', 'The Twelve Sons of Israel (Jacob)', 'Genesis 29-30, 35, 49 · Founders of the Twelve Tribes', [
                 makeFamily(
                     [
-                        {name:'Jacob (Israel)', type:'covenant', tooltip:'Renamed Israel · Father of 12 sons + 1 daughter'},
-                        {name:'Leah', sub:'1st wife', type:'female', tooltip:'Elder daughter of Laban · "Unloved" but blessed by God · Mother of 6 sons & Dinah'}
+                        {name: 'Jacob', type: 'covenant', tooltip: 'Renamed Israel · Father of 12 sons and 1 daughter'},
+                        {name: 'Leah', sub: '1st wife', type: 'female', tooltip: 'Elder daughter of Laban · "Unloved" but blessed by God · Mother of 6 sons & Dinah'}
                     ],
                     [
-                        {name:'Reuben', sub:'1st', type:'male', tooltip:'Firstborn · Lost birthright · Tried to save Joseph · "Unstable as water"'},
-                        {name:'Simeon', sub:'2nd', type:'male', tooltip:'Violent with Levi at Shechem · Scattered in Israel'},
-                        {name:'Levi', sub:'3rd · Priests', type:'male', tooltip:'Priestly tribe · Moses & Aaron\'s ancestor · No land · Served in Temple'},
-                        {name:'Judah', sub:'4th · ROYAL', type:'covenant', tooltip:'LION of Judah! · Scepter promise · Ancestor of David & JESUS · Emerged as leader'},
-                        {name:'Issachar', sub:'9th', type:'male', tooltip:'Strong donkey · Agricultural tribe · Understood the times'},
-                        {name:'Zebulun', sub:'10th', type:'male', tooltip:'Seafaring tribe · Haven for ships'}
+                        {name: 'Reuben', sub: '1st', type: 'male', tooltip: 'Firstborn · Lost birthright · Tried to save Joseph'},
+                        {name: 'Simeon', sub: '2nd', type: 'male', tooltip: 'Violent with Levi · Scattered in Israel'},
+                        {name: 'Levi', sub: '3rd · Priests', type: 'male', tooltip: 'Priestly tribe · Moses & Aaron · No land inheritance'},
+                        {name: 'Judah', sub: '4th · ROYAL', type: 'covenant', tooltip: 'LION of Judah! · Scepter promise · Ancestor of David & JESUS CHRIST'},
+                        {name: 'Issachar', sub: '9th', type: 'male', tooltip: 'Strong donkey · Agricultural tribe'},
+                        {name: 'Zebulun', sub: '10th', type: 'male', tooltip: 'Seafaring tribe · Haven for ships'}
                     ]
                 ),
                 makeFamily(
                     [
-                        {name:'Jacob', type:'covenant', tooltip:''},
-                        {name:'Rachel', sub:'Beloved wife', type:'female', tooltip:'Jacob\'s true love · Beautiful · Initially barren · Died bearing Benjamin · Buried near Bethlehem'}
+                        {name: 'Jacob', type: 'covenant', tooltip: ''},
+                        {name: 'Rachel', sub: 'Beloved wife', type: 'female', tooltip: 'Jacob\'s true love · Beautiful · Died bearing Benjamin · Buried near Bethlehem'}
                     ],
                     [
-                        {name:'Joseph', sub:'11th', type:'covenant', tooltip:'Favorite son · Sold as slave · Rose to rule Egypt · Saved family · Forgave brothers · Double inheritance'},
-                        {name:'Benjamin', sub:'12th', type:'male', tooltip:'Youngest · Only full brother of Joseph · Tribe of King Saul & Apostle Paul'}
+                        {name: 'Joseph', sub: '11th · Double portion', type: 'covenant', tooltip: 'Favorite son · Sold as slave · Rose to rule Egypt · Forgave brothers · "God meant it for good"'},
+                        {name: 'Benjamin', sub: '12th', type: 'male', tooltip: 'Youngest · Only full brother of Joseph · King Saul & Apostle Paul\'s tribe'}
                     ]
                 ),
                 makeFamily(
                     [
-                        {name:'Bilhah', sub:'Rachel\'s maid', type:'female', tooltip:'Rachel\'s servant'},
-                        {name:'Zilpah', sub:'Leah\'s maid', type:'female', tooltip:'Leah\'s servant'}
+                        {name: 'Bilhah', sub: 'Rachel\'s maid', type: 'female', tooltip: 'Rachel\'s servant'},
+                        {name: 'Zilpah', sub: 'Leah\'s maid', type: 'female', tooltip: 'Leah\'s servant'}
                     ],
                     [
-                        {name:'Dan', sub:'5th', type:'male', tooltip:'Judge tribe · Samson was from Dan'},
-                        {name:'Naphtali', sub:'6th', type:'male', tooltip:'Doe set free · Galilee region'},
-                        {name:'Gad', sub:'7th', type:'male', tooltip:'Warrior tribe · East of Jordan'},
-                        {name:'Asher', sub:'8th', type:'male', tooltip:'Happy · Rich food · Fertile land'}
+                        {name: 'Dan', sub: '5th', type: 'male', tooltip: 'Judge tribe · Samson was from Dan'},
+                        {name: 'Naphtali', sub: '6th', type: 'male', tooltip: 'Doe set free · Galilee region'},
+                        {name: 'Gad', sub: '7th', type: 'male', tooltip: 'Warrior tribe · East of Jordan'},
+                        {name: 'Asher', sub: '8th', type: 'male', tooltip: 'Happy · Rich food · Fertile land'}
                     ]
                 )
-            ]);
-            container.appendChild(sec5);
+            ]));
 
             // ============ SECTION 6: JUDAH TO DAVID ============
-            var sec6 = makeSection('sec6', 'From Judah to King David', 'Ruth 4 · Matthew 1 · The Royal Messianic Line', [
+            container.appendChild(makeSection('sec-david', 'From Judah to King David', 'Ruth 4 · Matthew 1 · The Royal Messianic Line', [
                 makeFamily(
                     [
-                        {name:'Judah', type:'covenant', tooltip:'Son of Jacob · Received Messianic blessing'},
-                        {name:'Tamar', sub:'Canaanite', type:'female', tooltip:'Widow · Secured her rights · "More righteous" · In Messianic line'}
+                        {name: 'Judah', type: 'covenant', tooltip: 'Son of Jacob · Received Messianic blessing'},
+                        {name: 'Tamar', sub: 'Canaanite', type: 'female', tooltip: 'Widow · Secured her rights · "More righteous than I" · In Messianic line'}
                     ],
                     [
-                        {name:'Perez', sub:'Twin', type:'male', tooltip:'"Breach-maker" · Ancestor of David'}
+                        {name: 'Perez', sub: 'Twin', type: 'male', tooltip: '"Breach-maker" · Ancestor of David and Jesus'}
                     ]
                 ),
                 makeFamily(
                     [
-                        {name:'Salmon', type:'male', tooltip:''},
-                        {name:'Rahab', sub:'Canaanite', type:'female', tooltip:'Former prostitute of Jericho · Hid spies · Great faith · In Messianic line'}
+                        {name: 'Salmon', type: 'male', tooltip: ''},
+                        {name: 'Rahab', sub: 'Canaanite', type: 'female', tooltip: 'Former prostitute of Jericho · Hid spies · Great faith · In Messianic line'}
                     ],
                     [
-                        {name:'Boaz', sub:'Redeemer', type:'male', tooltip:'Kinsman-redeemer · Noble character · Married Ruth'},
-                        {name:'Ruth', sub:'Moabite', type:'female', tooltip:'Moabite widow · "Your God my God" · Loyal · Great-grandmother of David · In Messianic line'}
+                        {name: 'Boaz', sub: 'Redeemer', type: 'male', tooltip: 'Kinsman-redeemer · Noble character · Married Ruth'}
                     ]
                 ),
                 makeFamily(
                     [
-                        {name:'Boaz & Ruth', type:'male', tooltip:''}
+                        {name: 'Boaz', type: 'male', tooltip: ''},
+                        {name: 'Ruth', sub: 'Moabite', type: 'female', tooltip: 'Moabite widow · "Your God my God" · Loyal to Naomi · In Messianic line'}
                     ],
                     [
-                        {name:'Obed', type:'male', tooltip:'Son of Boaz & Ruth'},
-                        {name:'Jesse', sub:'Bethlehem', type:'male', tooltip:'Father of 8 sons · Grandson of Ruth'},
-                        {name:'KING DAVID', sub:'40 yr reign', type:'covenant', tooltip:'THE KING! · Shepherd boy · Killed Goliath · Fled Saul · Captured Jerusalem · Wrote Psalms · Eternal throne covenant · "Man after God\'s heart" · Ancestor of JESUS'}
+                        {name: 'Obed', type: 'male', tooltip: 'Son of Boaz & Ruth'},
+                        {name: 'Jesse', sub: 'Bethlehem', type: 'male', tooltip: 'Father of 8 sons'},
+                        {name: 'KING DAVID', sub: '40 yr reign', type: 'covenant', tooltip: 'THE KING! · Shepherd · Killed Goliath · Captured Jerusalem · Wrote Psalms · Eternal throne covenant · "Man after God\'s heart" · Ancestor of JESUS'}
                     ]
                 )
-            ]);
-            container.appendChild(sec6);
+            ]));
 
             // ============ SECTION 7: JESUS ============
-            var sec7 = makeSection('sec7', 'The Fulfillment — Jesus Christ', 'Matthew 1:16-17 · Luke 3:23-38 · The Promised Seed Arrives!', [
+            container.appendChild(makeSection('sec-jesus', 'The Fulfillment — Jesus Christ', 'Matthew 1:16-17 · Luke 3:23-38 · The Promised Seed Arrives!', [
                 makeFamily(
                     [
-                        {name:'Joseph', sub:'Legal father', type:'male', tooltip:'Carpenter · Descendant of David · Righteous · Obeyed angel in dreams · Protected Mary & Jesus'},
-                        {name:'Mary', sub:'Virgin mother', type:'female', tooltip:'Young virgin · "I am the Lord\'s servant" · Conceived by Holy Spirit · Present at cross & resurrection'}
+                        {name: 'Joseph', sub: 'Legal father', type: 'male', tooltip: 'Carpenter · Descendant of David · Righteous man · Obeyed angel · Protected Mary & Jesus'},
+                        {name: 'Mary', sub: 'Virgin mother', type: 'female', tooltip: 'Young virgin · "I am the Lord\'s servant" · Conceived by Holy Spirit · Mother of Jesus'}
                     ],
                     [
-                        {name:'JESUS CHRIST', sub:'KING OF KINGS', type:'jesus', tooltip:'THE MESSIAH! · Son of God · Son of David · Lion of Judah · Seed of Abraham · Born in Bethlehem · Crucified · ROSE AGAIN · Ascended · Coming again! · Fulfills EVERY covenant!'}
+                        {name: 'JESUS CHRIST', sub: 'KING OF KINGS', type: 'jesus', tooltip: 'THE MESSIAH! · Son of God · Son of David · Lion of Judah · Born in Bethlehem · Crucified · ROSE AGAIN · Ascended to heaven · Coming again! · Fulfills EVERY covenant promise!'}
                     ]
                 )
-            ]);
-            container.appendChild(sec7);
+            ]));
+
+            console.log('🌳 Family Tree built successfully!');
+            console.log('👆 Hover over circles for details');
+            console.log('💍 Look for ring emojis between spouses');
+            console.log('🔗 Lines connect parents to children');
+            console.log('🟡 Gold rings = Covenant figures | ✨ Glowing = Jesus');
         }
 
-        // Build the tree when page loads
-        buildTree();
-        console.log('🌳 Family Tree built successfully!');
-        console.log('👆 Hover over circles for details');
-        console.log('💍 Look for ring emojis between spouses');
-        console.log('🔗 Lines connect parents to children');
+        // Build on page load
+        document.addEventListener('DOMContentLoaded', buildTree);
     </script>
 </body>
 </html>
