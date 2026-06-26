@@ -1,0 +1,1280 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Biblical Family Tree · Visual Diagram</title>
+    <style>
+      :root {
+        --bg: #0d1a12;
+        --card-bg: #152318;
+        --text: #e0ece0;
+        --gold: #c9a94e;
+        --emerald: #4a9e6b;
+        --line: #2d4a32;
+        --male: #4a7090;
+        --female: #8a5a7a;
+        --highlight: #c9a94e;
+        --node-size: 60px;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background: var(--bg);
+        font-family:
+          system-ui,
+          -apple-system,
+          sans-serif;
+        color: var(--text);
+        overflow-x: auto;
+        min-height: 100vh;
+      }
+
+      .tree-header {
+        text-align: center;
+        padding: 2rem 1rem 1rem;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: rgba(13, 26, 18, 0.95);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid var(--line);
+      }
+
+      .tree-header h1 {
+        font-family: Georgia, serif;
+        font-size: 2.2rem;
+        background: linear-gradient(180deg, #e8f5e8, #6bc48a);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 0.5rem;
+      }
+
+      .tree-header p {
+        color: #7a9476;
+        font-style: italic;
+      }
+
+      .tree-controls {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin: 0.5rem 0;
+        flex-wrap: wrap;
+      }
+
+      .tree-controls button {
+        background: var(--card-bg);
+        border: 1px solid var(--line);
+        color: var(--text);
+        padding: 0.5rem 1.2rem;
+        border-radius: 20px;
+        cursor: pointer;
+        font-size: 0.85rem;
+        transition: all 0.3s;
+      }
+
+      .tree-controls button:hover {
+        border-color: var(--emerald);
+        background: #1a2c1e;
+      }
+
+      .tree-controls button.active {
+        background: var(--emerald);
+        color: white;
+        border-color: var(--emerald);
+      }
+
+      .legend {
+        display: flex;
+        justify-content: center;
+        gap: 1.5rem;
+        margin: 0.5rem 0;
+        font-size: 0.8rem;
+        color: #7a9476;
+        flex-wrap: wrap;
+      }
+
+      .legend span {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+      }
+
+      .legend-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        display: inline-block;
+      }
+
+      .legend-dot.male {
+        background: var(--male);
+      }
+      .legend-dot.female {
+        background: var(--female);
+      }
+      .legend-dot.covenant {
+        background: var(--gold);
+      }
+      .legend-dot.jesus {
+        background: #ffd700;
+        box-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+      }
+
+      .tree-container {
+        padding: 2rem;
+        overflow-x: auto;
+        overflow-y: visible;
+        display: flex;
+        justify-content: center;
+        min-width: fit-content;
+      }
+
+      .tree-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 3rem;
+        padding: 2rem 0;
+        min-width: max-content;
+      }
+
+      .generation-row {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1.5rem;
+        flex-wrap: nowrap;
+        position: relative;
+        min-width: fit-content;
+      }
+
+      .generation-label {
+        position: absolute;
+        left: -180px;
+        font-size: 0.75rem;
+        color: #7a9476;
+        text-align: right;
+        width: 160px;
+        font-style: italic;
+        white-space: nowrap;
+      }
+
+      .tree-node {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        cursor: pointer;
+        transition: transform 0.3s;
+        z-index: 1;
+        min-width: 70px;
+      }
+
+      .tree-node:hover {
+        transform: translateY(-5px);
+        z-index: 10;
+      }
+
+      .tree-node .node-circle {
+        width: var(--node-size);
+        height: var(--node-size);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 0.85rem;
+        text-align: center;
+        border: 3px solid var(--line);
+        background: var(--card-bg);
+        color: var(--text);
+        transition: all 0.3s;
+        position: relative;
+      }
+
+      .tree-node .node-circle.male {
+        border-color: #5a8aaa;
+        background: #1a2a38;
+      }
+      .tree-node .node-circle.female {
+        border-color: #9a6a8a;
+        background: #2a1a28;
+      }
+      .tree-node .node-circle.covenant {
+        border-color: var(--gold);
+        box-shadow: 0 0 15px rgba(201, 169, 78, 0.4);
+        background: #2a2410;
+      }
+      .tree-node .node-circle.jesus {
+        border-color: #ffd700;
+        box-shadow: 0 0 25px rgba(255, 215, 0, 0.7);
+        background: #3a3000;
+        font-size: 0.9rem;
+      }
+
+      .tree-node:hover .node-circle {
+        border-color: var(--emerald);
+        box-shadow: 0 0 20px rgba(74, 158, 107, 0.5);
+      }
+
+      .tree-node .node-label {
+        margin-top: 0.4rem;
+        font-size: 0.75rem;
+        text-align: center;
+        color: #bccdb8;
+        max-width: 90px;
+        line-height: 1.2;
+      }
+
+      .tree-node .node-sub {
+        font-size: 0.65rem;
+        color: #7a9476;
+        text-align: center;
+      }
+
+      /* Connecting lines */
+      .connector-down {
+        width: 2px;
+        height: 30px;
+        background: var(--line);
+        margin: 0 auto;
+      }
+
+      .connector-horizontal {
+        height: 2px;
+        background: var(--line);
+        flex: 1;
+        min-width: 20px;
+        position: relative;
+      }
+
+      .connector-group {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .children-row {
+        display: flex;
+        align-items: flex-start;
+        gap: 0;
+        position: relative;
+      }
+
+      .children-row .connector-horizontal {
+        align-self: center;
+      }
+
+      .spouse-connector {
+        width: 30px;
+        height: 2px;
+        background: #5a3a5a;
+        position: relative;
+      }
+
+      .spouse-connector::after {
+        content: "💍";
+        position: absolute;
+        top: -14px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 0.7rem;
+      }
+
+      .section-divider {
+        width: 100%;
+        max-width: 800px;
+        text-align: center;
+        padding: 1.5rem;
+        margin: 1rem 0;
+        border-top: 1px solid var(--line);
+        border-bottom: 1px solid var(--line);
+      }
+
+      .section-divider h3 {
+        font-family: Georgia, serif;
+        color: var(--gold);
+        font-size: 1.2rem;
+        letter-spacing: 1px;
+      }
+
+      .section-divider p {
+        color: #7a9476;
+        font-size: 0.8rem;
+      }
+
+      /* Tooltip */
+      .node-tooltip {
+        display: none;
+        position: absolute;
+        bottom: calc(100% + 15px);
+        left: 50%;
+        transform: translateX(-50%);
+        background: #1a2c1e;
+        border: 1px solid var(--emerald);
+        border-radius: 10px;
+        padding: 0.8rem 1rem;
+        font-size: 0.8rem;
+        white-space: nowrap;
+        z-index: 20;
+        pointer-events: none;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+        color: #e0ece0;
+      }
+
+      .node-tooltip strong {
+        color: var(--gold);
+        display: block;
+        margin-bottom: 0.2rem;
+      }
+
+      .tree-node:hover .node-tooltip {
+        display: block;
+      }
+
+      /* Responsive */
+      @media (max-width: 900px) {
+        .generation-label {
+          position: static;
+          text-align: center;
+          width: auto;
+          margin-bottom: 0.5rem;
+        }
+
+        .generation-row {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        :root {
+          --node-size: 50px;
+        }
+
+        .tree-node .node-label {
+          font-size: 0.7rem;
+          max-width: 70px;
+        }
+
+        .tree-header h1 {
+          font-size: 1.5rem;
+        }
+      }
+
+      /* Print */
+      @media print {
+        body {
+          background: white;
+          color: black;
+        }
+        .tree-header {
+          position: static;
+          background: white;
+        }
+        .tree-node .node-circle {
+          background: white;
+          color: black;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="tree-header">
+      <h1>🌳 The Biblical Family Tree</h1>
+      <p>From Adam to Jesus Christ — A Visual Genealogy</p>
+      <div class="legend">
+        <span><span class="legend-dot male"></span> Male</span>
+        <span><span class="legend-dot female"></span> Female</span>
+        <span><span class="legend-dot covenant"></span> Covenant Figure</span>
+        <span><span class="legend-dot jesus"></span> Jesus Christ</span>
+      </div>
+    </div>
+
+    <div class="tree-container">
+      <div class="tree-wrapper" id="familyTree">
+        <!-- Generated by JavaScript -->
+      </div>
+    </div>
+
+    <script>
+      // ============ FAMILY TREE DATA ============
+      const familyTreeData = {
+        sections: [
+          {
+            title: "Creation & Early Patriarchs",
+            subtitle: "Genesis 1-5",
+            generations: [
+              {
+                label: "First Humans",
+                nodes: [
+                  {
+                    id: "adam",
+                    name: "Adam",
+                    sub: "930 yrs",
+                    type: "male",
+                    tooltip: "First man · Created from dust · Lived 930 years",
+                  },
+                  {
+                    id: "eve",
+                    name: "Eve",
+                    sub: "Mother of all",
+                    type: "female",
+                    tooltip:
+                      "First woman · Created from Adam's rib · Mother of all living",
+                  },
+                ],
+                children: [
+                  {
+                    id: "cain",
+                    name: "Cain",
+                    sub: "Farmer",
+                    type: "male",
+                    parent: "adam",
+                    tooltip: "Firstborn · Killed Abel · Marked by God",
+                  },
+                  {
+                    id: "abel",
+                    name: "Abel",
+                    sub: "Shepherd",
+                    type: "male",
+                    parent: "adam",
+                    tooltip: "Second son · Killed by Cain · Righteous",
+                  },
+                  {
+                    id: "seth",
+                    name: "Seth",
+                    sub: "Appointed",
+                    type: "male",
+                    parent: "adam",
+                    tooltip:
+                      "Third son · Ancestor of Noah · Godly line continues",
+                  },
+                ],
+              },
+              {
+                label: "Seth's Line",
+                nodes: [
+                  {
+                    id: "seth2",
+                    name: "Seth",
+                    sub: "912 yrs",
+                    type: "male",
+                    tooltip:
+                      "Born after Abel's death · Ancestor of the faithful line",
+                  },
+                ],
+                children: [
+                  {
+                    id: "enosh",
+                    name: "Enosh",
+                    sub: "905 yrs",
+                    type: "male",
+                    tooltip: "His time: people began calling on the LORD",
+                  },
+                ],
+              },
+              {
+                label: "Continued Line",
+                nodes: [
+                  { id: "kenan", name: "Kenan", sub: "910 yrs", type: "male" },
+                  {
+                    id: "mahalalel",
+                    name: "Mahalalel",
+                    sub: "895 yrs",
+                    type: "male",
+                  },
+                  { id: "jared", name: "Jared", sub: "962 yrs", type: "male" },
+                ],
+              },
+              {
+                label: "Special Figures",
+                nodes: [
+                  {
+                    id: "enoch",
+                    name: "Enoch",
+                    sub: "365 yrs · Taken by God",
+                    type: "male",
+                    tooltip:
+                      "Walked with God · Did not die · Taken directly to heaven",
+                  },
+                  {
+                    id: "methuselah",
+                    name: "Methuselah",
+                    sub: "969 yrs",
+                    type: "male",
+                    tooltip: "Longest-lived human · Died year of flood",
+                  },
+                  {
+                    id: "lamech1",
+                    name: "Lamech",
+                    sub: "777 yrs",
+                    type: "male",
+                    tooltip: 'Father of Noah · Named him "comfort"',
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            title: "Noah & The Flood",
+            subtitle: "Genesis 6-10",
+            generations: [
+              {
+                label: "Righteous Man",
+                nodes: [
+                  {
+                    id: "noah",
+                    name: "Noah",
+                    sub: "950 yrs",
+                    type: "covenant",
+                    tooltip:
+                      "Built the ark · Found favor with God · Covenant of rainbow",
+                  },
+                ],
+                children: [
+                  {
+                    id: "shem",
+                    name: "Shem",
+                    sub: "600 yrs",
+                    type: "male",
+                    tooltip: "Ancestor of Abraham & Semitic peoples",
+                  },
+                  {
+                    id: "ham",
+                    name: "Ham",
+                    sub: "Father of Canaan",
+                    type: "male",
+                    tooltip: "Ancestor of African & Canaanite peoples",
+                  },
+                  {
+                    id: "japheth",
+                    name: "Japheth",
+                    sub: "Eldest?",
+                    type: "male",
+                    tooltip: "Ancestor of European & Asian peoples",
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            title: "From Shem to Abraham",
+            subtitle: "Genesis 11",
+            generations: [
+              {
+                label: "Shem's Descendants",
+                nodes: [
+                  { id: "shem2", name: "Shem", type: "male" },
+                  { id: "arphaxad", name: "Arphaxad", type: "male" },
+                  { id: "shelah", name: "Shelah", type: "male" },
+                  {
+                    id: "eber",
+                    name: "Eber",
+                    sub: '"Hebrew"',
+                    type: "male",
+                    tooltip:
+                      'Ancestor of the Hebrews · His name gives "Hebrew"',
+                  },
+                  {
+                    id: "peleg",
+                    name: "Peleg",
+                    sub: "Earth divided",
+                    type: "male",
+                    tooltip: "In his days the earth was divided (Babel?)",
+                  },
+                  { id: "reu", name: "Reu", type: "male" },
+                  { id: "serug", name: "Serug", type: "male" },
+                  { id: "nahor", name: "Nahor", type: "male" },
+                  {
+                    id: "terah",
+                    name: "Terah",
+                    sub: "205 yrs",
+                    type: "male",
+                    tooltip:
+                      "Father of Abraham · Left Ur for Canaan but stopped in Harran",
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            title: "The Patriarchs",
+            subtitle: "Genesis 12-50",
+            generations: [
+              {
+                label: "Abraham's Family",
+                nodes: [
+                  {
+                    id: "abraham",
+                    name: "Abraham",
+                    sub: "175 yrs",
+                    type: "covenant",
+                    tooltip:
+                      "Father of many nations · Covenant of land, seed, blessing",
+                  },
+                  {
+                    id: "sarah",
+                    name: "Sarah",
+                    sub: "127 yrs",
+                    type: "female",
+                    tooltip:
+                      "Wife of Abraham · Bore Isaac at 90 · Buried at Machpelah",
+                  },
+                ],
+                children: [
+                  {
+                    id: "ishmael",
+                    name: "Ishmael",
+                    sub: "137 yrs · 12 sons",
+                    type: "male",
+                    tooltip:
+                      "Son of Hagar · Ancestor of Arab peoples · Blessed by God",
+                  },
+                  {
+                    id: "isaac",
+                    name: "Isaac",
+                    sub: "180 yrs",
+                    type: "covenant",
+                    tooltip:
+                      "Son of promise · Bound on altar · Married Rebekah",
+                  },
+                ],
+              },
+              {
+                label: "Isaac's Sons",
+                nodes: [
+                  { id: "isaac2", name: "Isaac", type: "male" },
+                  {
+                    id: "rebekah",
+                    name: "Rebekah",
+                    type: "female",
+                    tooltip: "Wife of Isaac · Mother of twins · Favored Jacob",
+                  },
+                ],
+                children: [
+                  {
+                    id: "esau",
+                    name: "Esau",
+                    sub: "Edom",
+                    type: "male",
+                    tooltip:
+                      "Firstborn · Sold birthright · Ancestor of Edomites",
+                  },
+                  {
+                    id: "jacob",
+                    name: "Jacob",
+                    sub: "Israel · 147 yrs",
+                    type: "covenant",
+                    tooltip:
+                      "Wrestled with God · Renamed Israel · Father of 12 tribes",
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            title: "The Twelve Sons of Israel",
+            subtitle: "Genesis 29-30, 35",
+            generations: [
+              {
+                label: "Leah's Sons",
+                nodes: [
+                  {
+                    id: "leah",
+                    name: "Leah",
+                    type: "female",
+                    tooltip: "First wife of Jacob · Mother of 6 sons & Dinah",
+                  },
+                  { id: "jacob2", name: "Jacob (Israel)", type: "covenant" },
+                ],
+                children: [
+                  {
+                    id: "reuben",
+                    name: "Reuben",
+                    sub: "1st",
+                    type: "male",
+                    tooltip: "Firstborn · Lost birthright · Unstable as water",
+                  },
+                  {
+                    id: "simeon",
+                    name: "Simeon",
+                    sub: "2nd",
+                    type: "male",
+                    tooltip: "Violent with Levi · Scattered in Israel",
+                  },
+                  {
+                    id: "levi",
+                    name: "Levi",
+                    sub: "3rd · Priests",
+                    type: "male",
+                    tooltip:
+                      "Priestly tribe · Moses & Aaron's ancestor · No land inheritance",
+                  },
+                  {
+                    id: "judah",
+                    name: "Judah",
+                    sub: "4th · ROYAL",
+                    type: "covenant",
+                    tooltip:
+                      "Lion of Judah · David's ancestor · Jesus' tribe · Scepter promise",
+                  },
+                  {
+                    id: "issachar",
+                    name: "Issachar",
+                    sub: "9th",
+                    type: "male",
+                    tooltip:
+                      "Strong donkey · Agricultural tribe · Wise in times",
+                  },
+                  {
+                    id: "zebulun",
+                    name: "Zebulun",
+                    sub: "10th",
+                    type: "male",
+                    tooltip: "Seafaring tribe · Haven for ships",
+                  },
+                ],
+              },
+              {
+                label: "Rachel's Sons",
+                nodes: [
+                  {
+                    id: "rachel",
+                    name: "Rachel",
+                    type: "female",
+                    tooltip:
+                      "Beloved wife · Died bearing Benjamin · Buried near Bethlehem",
+                  },
+                ],
+                children: [
+                  {
+                    id: "joseph",
+                    name: "Joseph",
+                    sub: "11th · Double portion",
+                    type: "covenant",
+                    tooltip:
+                      "Sold as slave · Ruler of Egypt · Saved his family · Forgave brothers",
+                  },
+                  {
+                    id: "benjamin",
+                    name: "Benjamin",
+                    sub: "12th",
+                    type: "male",
+                    tooltip:
+                      "Youngest · Ravenous wolf · King Saul & Apostle Paul's tribe",
+                  },
+                ],
+              },
+              {
+                label: "Handmaids' Sons",
+                nodes: [
+                  {
+                    id: "bilhah",
+                    name: "Bilhah",
+                    type: "female",
+                    tooltip: "Rachel's servant",
+                  },
+                  {
+                    id: "zilpah",
+                    name: "Zilpah",
+                    type: "female",
+                    tooltip: "Leah's servant",
+                  },
+                ],
+                children: [
+                  {
+                    id: "dan",
+                    name: "Dan",
+                    sub: "5th",
+                    type: "male",
+                    tooltip:
+                      "Judge tribe · Samson's tribe · Later fell into idolatry",
+                  },
+                  {
+                    id: "naphtali",
+                    name: "Naphtali",
+                    sub: "6th",
+                    type: "male",
+                    tooltip: "Doe set free · Galilee region · Beautiful words",
+                  },
+                  {
+                    id: "gad",
+                    name: "Gad",
+                    sub: "7th",
+                    type: "male",
+                    tooltip:
+                      "Warrior tribe · East of Jordan · Attacked but victorious",
+                  },
+                  {
+                    id: "asher",
+                    name: "Asher",
+                    sub: "8th",
+                    type: "male",
+                    tooltip:
+                      "Happy · Rich food · Royal delicacies · Fertile land",
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            title: "Joseph's Sons (Double Inheritance)",
+            subtitle: "Genesis 41, 48",
+            generations: [
+              {
+                label: "Joseph in Egypt",
+                nodes: [
+                  { id: "joseph2", name: "Joseph", type: "covenant" },
+                  {
+                    id: "asenath",
+                    name: "Asenath",
+                    type: "female",
+                    tooltip:
+                      "Egyptian wife · Daughter of Potiphera · Priest of On",
+                  },
+                ],
+                children: [
+                  {
+                    id: "manasseh",
+                    name: "Manasseh",
+                    sub: "Firstborn",
+                    type: "male",
+                    tooltip:
+                      "Older · Blessed second by Jacob · Half-tribe east of Jordan",
+                  },
+                  {
+                    id: "ephraim",
+                    name: "Ephraim",
+                    sub: "Younger",
+                    type: "male",
+                    tooltip:
+                      "Younger · Received firstborn blessing · Dominant northern tribe",
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            title: "From Judah to David",
+            subtitle: "Ruth 4 · Matthew 1",
+            generations: [
+              {
+                label: "Judah's Line",
+                nodes: [
+                  { id: "judah2", name: "Judah", type: "covenant" },
+                  {
+                    id: "tamar",
+                    name: "Tamar",
+                    type: "female",
+                    tooltip:
+                      "Canaanite · Widow · Secured her rights · In Messianic line",
+                  },
+                ],
+                children: [
+                  {
+                    id: "perez",
+                    name: "Perez",
+                    sub: "Twin",
+                    type: "male",
+                    tooltip: "Breach-maker · Ancestor of David",
+                  },
+                  { id: "hebron", name: "Hezron", type: "male" },
+                  { id: "ram", name: "Ram", type: "male" },
+                  { id: "amminadab", name: "Amminadab", type: "male" },
+                  {
+                    id: "nahshon",
+                    name: "Nahshon",
+                    type: "male",
+                    tooltip: "Leader of Judah in wilderness",
+                  },
+                  { id: "salmon", name: "Salmon", type: "male" },
+                ],
+              },
+              {
+                label: "Boaz & Ruth",
+                nodes: [
+                  { id: "salmon2", name: "Salmon", type: "male" },
+                  {
+                    id: "rahab",
+                    name: "Rahab",
+                    type: "female",
+                    tooltip:
+                      "Canaanite · Former prostitute · Hid spies · Great faith · In Messianic line",
+                  },
+                ],
+                children: [
+                  {
+                    id: "boaz",
+                    name: "Boaz",
+                    type: "male",
+                    tooltip:
+                      "Kinsman-redeemer · Married Ruth · Great-grandfather of David",
+                  },
+                  {
+                    id: "ruth",
+                    name: "Ruth",
+                    type: "female",
+                    tooltip:
+                      'Moabite · Loyal to Naomi · "Your God my God" · In Messianic line',
+                  },
+                ],
+              },
+              {
+                label: "To the King",
+                nodes: [
+                  {
+                    id: "obed",
+                    name: "Obed",
+                    type: "male",
+                    tooltip: "Son of Boaz & Ruth",
+                  },
+                  {
+                    id: "jesse",
+                    name: "Jesse",
+                    type: "male",
+                    tooltip: "Father of 8 sons · From Bethlehem",
+                  },
+                  {
+                    id: "david",
+                    name: "DAVID",
+                    sub: "King · 40 yrs",
+                    type: "covenant",
+                    tooltip:
+                      "Shepherd king · Killed Goliath · Man after God's heart · Eternal throne promise",
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            title: "The Kings of Judah (Davidic Line)",
+            subtitle: "Matthew 1:6-11",
+            generations: [
+              {
+                label: "United Kingdom",
+                nodes: [
+                  { id: "david2", name: "David", type: "covenant" },
+                  {
+                    id: "bathsheba",
+                    name: "Bathsheba",
+                    type: "female",
+                    tooltip:
+                      "Wife of Uriah · Mother of Solomon · In Messianic line",
+                  },
+                ],
+                children: [
+                  {
+                    id: "solomon",
+                    name: "Solomon",
+                    sub: "Wisest · Temple",
+                    type: "covenant",
+                    tooltip:
+                      "Wisest man · Built Temple · Wrote Proverbs · Heart turned to idols",
+                  },
+                ],
+              },
+              {
+                label: "Kings of Judah",
+                nodes: [
+                  {
+                    id: "rehoboam",
+                    name: "Rehoboam",
+                    type: "male",
+                    tooltip: "Kingdom divided · Harsh answer · Lost 10 tribes",
+                  },
+                  { id: "abijah", name: "Abijah", type: "male" },
+                  {
+                    id: "asa",
+                    name: "Asa",
+                    sub: "Good",
+                    type: "male",
+                    tooltip:
+                      "Reformer · Removed idols · Trusted God against Ethiopians",
+                  },
+                  {
+                    id: "jehoshaphat",
+                    name: "Jehoshaphat",
+                    sub: "Good",
+                    type: "male",
+                    tooltip:
+                      'Faithful king · Sent teachers · "Eyes on You" prayer',
+                  },
+                  { id: "jehoram", name: "Jehoram", sub: "Evil", type: "male" },
+                  {
+                    id: "uzziah",
+                    name: "Uzziah",
+                    sub: "Good then proud",
+                    type: "male",
+                    tooltip: "52 yr reign · Struck with leprosy for pride",
+                  },
+                  { id: "jotham", name: "Jotham", sub: "Good", type: "male" },
+                  {
+                    id: "ahaz",
+                    name: "Ahaz",
+                    sub: "Very evil",
+                    type: "male",
+                    tooltip:
+                      "Child sacrifice · Closed Temple · Immanuel prophecy given",
+                  },
+                  {
+                    id: "hezekiah",
+                    name: "Hezekiah",
+                    sub: "GREAT",
+                    type: "covenant",
+                    tooltip:
+                      "Great reformer · Trusted God vs Assyria · 185,000 angels · 15 extra years",
+                  },
+                  {
+                    id: "manasseh",
+                    name: "Manasseh",
+                    sub: "Evil → Repented",
+                    type: "male",
+                    tooltip: "55 yrs · Most wicked · Later repented in Babylon",
+                  },
+                  { id: "amon", name: "Amon", sub: "Evil", type: "male" },
+                  {
+                    id: "josiah",
+                    name: "Josiah",
+                    sub: "GREAT",
+                    type: "covenant",
+                    tooltip:
+                      "Child king · Found Law book · Greatest reformer · Died at Megiddo",
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            title: "Exile to Christ",
+            subtitle: "Matthew 1:12-16",
+            generations: [
+              {
+                label: "Exile Period",
+                nodes: [
+                  {
+                    id: "jeconiah",
+                    name: "Jeconiah",
+                    sub: "Exiled",
+                    type: "male",
+                    tooltip:
+                      "Taken to Babylon · Released after 37 yrs · Curse lifted?",
+                  },
+                  { id: "shealtiel", name: "Shealtiel", type: "male" },
+                  {
+                    id: "zerubbabel",
+                    name: "Zerubbabel",
+                    sub: "Governor",
+                    type: "male",
+                    tooltip: "Led return · Rebuilt Temple · God's signet ring",
+                  },
+                ],
+              },
+              {
+                label: "Intertestamental Period",
+                nodes: [
+                  { id: "abiud", name: "Abiud", type: "male" },
+                  { id: "eliakim", name: "Eliakim", type: "male" },
+                  { id: "azor", name: "Azor", type: "male" },
+                  { id: "zadok", name: "Zadok", type: "male" },
+                  { id: "achim", name: "Achim", type: "male" },
+                  { id: "eliud", name: "Eliud", type: "male" },
+                  { id: "eleazar", name: "Eleazar", type: "male" },
+                  { id: "matthan", name: "Matthan", type: "male" },
+                  {
+                    id: "jacob3",
+                    name: "Jacob",
+                    type: "male",
+                    tooltip: "Father of Joseph (legal grandfather of Jesus)",
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            title: "The Fulfillment",
+            subtitle: "Matthew 1:16 · Luke 3:23",
+            generations: [
+              {
+                label: "Holy Family",
+                nodes: [
+                  {
+                    id: "joseph3",
+                    name: "Joseph",
+                    sub: "Legal father",
+                    type: "male",
+                    tooltip:
+                      "Carpenter · Righteous man · Obeyed angel · Protected Jesus",
+                  },
+                  {
+                    id: "mary",
+                    name: "Mary",
+                    sub: "Mother",
+                    type: "female",
+                    tooltip:
+                      'Virgin mother · Highly favored · "Let it be" · At cross & tomb',
+                  },
+                ],
+                children: [
+                  {
+                    id: "jesus",
+                    name: "JESUS",
+                    sub: "CHRIST · KING",
+                    type: "jesus",
+                    tooltip:
+                      "Son of God · Son of David · Lion of Judah · King of Kings · Savior of the world",
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      };
+
+      // ============ RENDER FAMILY TREE ============
+      function renderFamilyTree() {
+        const container = document.getElementById("familyTree");
+        container.innerHTML = "";
+
+        familyTreeData.sections.forEach((section) => {
+          // Section divider
+          const divider = document.createElement("div");
+          divider.className = "section-divider";
+          divider.innerHTML = `<h3>${section.title}</h3><p>${section.subtitle}</p>`;
+          container.appendChild(divider);
+
+          // Render each generation
+          section.generations.forEach((gen) => {
+            // Generation row container
+            const genRow = document.createElement("div");
+            genRow.className = "generation-row";
+
+            // Label
+            if (gen.label) {
+              const label = document.createElement("div");
+              label.className = "generation-label";
+              label.textContent = gen.label;
+              genRow.appendChild(label);
+            }
+
+            // Parent nodes
+            if (gen.nodes && gen.nodes.length > 0) {
+              gen.nodes.forEach((node) => {
+                const nodeEl = createTreeNode(node);
+                genRow.appendChild(nodeEl);
+
+                // Add spouse connector between pairs
+                if (gen.nodes.length === 2 && gen.nodes.indexOf(node) === 0) {
+                  const spouseConn = document.createElement("div");
+                  spouseConn.className = "spouse-connector";
+                  genRow.appendChild(spouseConn);
+                }
+              });
+            }
+
+            container.appendChild(genRow);
+
+            // Connector down to children
+            if (gen.children && gen.children.length > 0) {
+              const connectorDown = document.createElement("div");
+              connectorDown.className = "connector-down";
+              connectorDown.style.margin = "0 auto";
+              container.appendChild(connectorDown);
+
+              // Children row
+              const childrenRow = document.createElement("div");
+              childrenRow.className = "generation-row";
+              childrenRow.style.gap = "1rem";
+
+              gen.children.forEach((child, index) => {
+                if (index > 0) {
+                  const horizConn = document.createElement("div");
+                  horizConn.className = "connector-horizontal";
+                  horizConn.style.maxWidth = "20px";
+                  childrenRow.appendChild(horizConn);
+                }
+                const childEl = createTreeNode(child);
+                childrenRow.appendChild(childEl);
+              });
+
+              container.appendChild(childrenRow);
+            }
+
+            // Spacing between generations
+            const spacer = document.createElement("div");
+            spacer.style.height = "15px";
+            container.appendChild(spacer);
+          });
+        });
+      }
+
+      function createTreeNode(data) {
+        const node = document.createElement("div");
+        node.className = "tree-node";
+        node.id = data.id;
+
+        const circle = document.createElement("div");
+        circle.className = "node-circle";
+
+        // Determine circle type
+        if (data.type === "jesus") {
+          circle.classList.add("jesus");
+        } else if (data.type === "covenant") {
+          circle.classList.add("covenant");
+        } else if (data.type === "female") {
+          circle.classList.add("female");
+        } else {
+          circle.classList.add("male");
+        }
+
+        // Display name (abbreviated if long)
+        let displayName = data.name;
+        if (displayName.length > 10) {
+          displayName = displayName.substring(0, 9) + "…";
+        }
+        circle.textContent = displayName;
+
+        node.appendChild(circle);
+
+        // Label
+        const label = document.createElement("div");
+        label.className = "node-label";
+        label.textContent = data.name;
+        node.appendChild(label);
+
+        // Sub label
+        if (data.sub) {
+          const sub = document.createElement("div");
+          sub.className = "node-sub";
+          sub.textContent = data.sub;
+          node.appendChild(sub);
+        }
+
+        // Tooltip
+        if (data.tooltip) {
+          const tooltip = document.createElement("div");
+          tooltip.className = "node-tooltip";
+          tooltip.innerHTML = `<strong>${data.name}</strong>${data.tooltip}`;
+          node.appendChild(tooltip);
+        }
+
+        return node;
+      }
+
+      // ============ INITIALIZE ============
+      document.addEventListener("DOMContentLoaded", function () {
+        renderFamilyTree();
+        console.log("🌳 Biblical Family Tree rendered successfully!");
+        console.log("   Hover over any node to see details");
+        console.log("   Gold rings = Covenant figures");
+        console.log("   Gold glow = Jesus Christ");
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,620 @@
+/* ============ CSS RESET & FOREST VARIABLES ============ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --bg-body: #0d1a12;
+    --bg-body-alt: #111f16;
+    --bg-card: #152318;
+    --bg-card-hover: #1a2c1e;
+    --bg-sidebar: #0a150e;
+    --text-primary: #e0ece0;
+    --text-secondary: #bccdb8;
+    --text-muted: #7a9476;
+    --text-heading: #e8f5e8;
+    --accent-emerald: #4a9e6b;
+    --accent-emerald-light: #6bc48a;
+    --accent-gold: #c9a94e;
+    --accent-gold-light: #e0c870;
+    --accent-forest: #2d6b45;
+    --accent-amber: #c4853a;
+    --accent-moss: #6b8e5a;
+    --border-soft: #1e3525;
+    --border-accent: #2d4a32;
+    --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.3);
+    --shadow-hover: 0 20px 48px rgba(0, 0, 0, 0.6), 0 0 24px rgba(74, 158, 107, 0.12);
+    --shadow-gold: 0 0 24px rgba(201, 169, 78, 0.18);
+    --font-serif: 'Georgia', 'Times New Roman', Times, serif;
+    --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+    --radius-sm: 10px;
+    --radius-md: 20px;
+    --radius-lg: 28px;
+    --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --gradient-card: linear-gradient(145deg, #152318 0%, #121f16 100%);
+    --gradient-gold: linear-gradient(135deg, #c9a94e 0%, #b89430 50%, #a07820 100%);
+    --gradient-emerald: linear-gradient(135deg, #4a9e6b 0%, #357a4d 100%);
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background: var(--bg-body);
+    background-image:
+        radial-gradient(ellipse at 20% 10%, rgba(74, 158, 107, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 90%, rgba(201, 169, 78, 0.06) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(107, 142, 90, 0.04) 0%, transparent 60%);
+    font-family: var(--font-sans);
+    color: var(--text-primary);
+    line-height: 1.75;
+    font-size: 1.05rem;
+    min-height: 100vh;
+}
+
+/* ============ SCROLLBAR ============ */
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: var(--bg-body-alt); border-radius: 10px; }
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--accent-emerald) 0%, #2d5a38 100%);
+    border-radius: 10px;
+    border: 2px solid var(--bg-body-alt);
+}
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #6bc48a 0%, #4a9e6b 100%);
+}
+
+/* ============ LAYOUT ============ */
+.genealogy-container {
+    display: flex;
+    max-width: 1400px;
+    margin: 0 auto;
+    min-height: 100vh;
+}
+
+/* ============ SIDEBAR ============ */
+.sidebar-nav {
+    width: 260px;
+    min-width: 260px;
+    background: var(--bg-sidebar);
+    border-right: 1px solid var(--border-soft);
+    padding: 1.5rem 0;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    z-index: 100;
+    box-shadow: 2px 0 24px rgba(0, 0, 0, 0.4);
+}
+
+.sidebar-header {
+    padding: 0 1.5rem 1.2rem;
+    border-bottom: 1px solid var(--border-soft);
+    margin-bottom: 1rem;
+}
+
+.sidebar-header h3 {
+    font-family: var(--font-serif);
+    color: var(--accent-gold);
+    font-size: 1.2rem;
+    letter-spacing: 0.5px;
+}
+
+.sidebar-links {
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-link {
+    display: block;
+    padding: 0.55rem 1.5rem;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.88rem;
+    transition: var(--transition);
+    border-left: 3px solid transparent;
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+.sidebar-link:hover {
+    background: rgba(74, 158, 107, 0.1);
+    color: var(--accent-emerald-light);
+    border-left-color: var(--accent-emerald-light);
+}
+
+.sidebar-link.active {
+    background: rgba(74, 158, 107, 0.18);
+    color: var(--accent-gold);
+    border-left-color: var(--accent-gold);
+    font-weight: 600;
+}
+
+/* ============ MAIN CONTENT ============ */
+.main-content {
+    flex: 1;
+    padding: 2rem 2.5rem;
+    max-width: 920px;
+}
+
+/* ============ TYPOGRAPHY ============ */
+h1, h2, h3, h4 {
+    font-family: var(--font-serif);
+    font-weight: 500;
+    letter-spacing: -0.3px;
+    color: var(--text-heading);
+}
+
+h1 {
+    font-size: 3.4rem;
+    line-height: 1.15;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(180deg, #e8f5e8 0%, #a8d8b8 40%, #4a9e6b 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 2px 8px rgba(74, 158, 107, 0.35));
+    text-align: center;
+}
+
+.genealogy-subtitle {
+    text-align: center;
+    font-size: 1.15rem;
+    color: var(--text-muted);
+    margin-bottom: 2.5rem;
+    font-style: italic;
+    border-bottom: 1px solid var(--border-accent);
+    padding-bottom: 2rem;
+    letter-spacing: 0.3px;
+}
+
+h2 {
+    font-size: 2.2rem;
+    margin: 2.5rem 0 1.2rem;
+    color: #e8f5e8;
+    border-left: 5px solid var(--accent-emerald);
+    padding-left: 1.2rem;
+    position: relative;
+}
+
+h2::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 1.2rem;
+    width: 60px;
+    height: 2px;
+    background: var(--gradient-emerald);
+    border-radius: 2px;
+}
+
+h3 {
+    font-size: 1.55rem;
+    margin: 1.8rem 0 0.8rem;
+    color: #c8dcc8;
+    display: inline-block;
+    position: relative;
+}
+
+h3::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, var(--accent-emerald-light) 0%, transparent 80%);
+}
+
+h4 {
+    font-size: 1.2rem;
+    margin: 1.3rem 0 0.5rem;
+    color: #b4ccb4;
+}
+
+/* ============ CARDS ============ */
+.tree-card {
+    background: var(--gradient-card);
+    border-radius: var(--radius-lg);
+    padding: 2.5rem 2.8rem;
+    margin: 2.5rem 0;
+    box-shadow: var(--shadow-card);
+    border: 1px solid var(--border-soft);
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.tree-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--gradient-emerald);
+    opacity: 0.5;
+    border-radius: 2px 2px 0 0;
+    transform: scaleX(0.2);
+    transform-origin: left;
+    transition: transform 0.5s ease;
+}
+
+.tree-card:hover::before {
+    transform: scaleX(1);
+}
+
+.tree-card:hover {
+    box-shadow: var(--shadow-hover), var(--shadow-gold);
+    transform: translateY(-2px);
+    border-color: var(--border-accent);
+    background: var(--bg-card-hover);
+}
+
+.scripture-badge-tree {
+    font-weight: 600;
+    color: #c8e8c0;
+    background: linear-gradient(135deg, rgba(74, 158, 107, 0.3) 0%, rgba(45, 107, 69, 0.25) 100%);
+    display: inline-block;
+    padding: 0.4rem 1.2rem;
+    border-radius: 30px;
+    font-size: 0.9rem;
+    margin: 0.6rem 0 1.2rem;
+    letter-spacing: 0.4px;
+    border: 1px solid rgba(74, 158, 107, 0.3);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* ============ GENERATION COUNT GRID ============ */
+.generation-count-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
+}
+
+.gen-card {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: var(--radius-md);
+    padding: 2rem 1.5rem;
+    text-align: center;
+    border: 1px solid var(--border-soft);
+    transition: var(--transition);
+}
+
+.gen-card:hover {
+    border-color: var(--accent-emerald);
+    box-shadow: 0 0 20px rgba(74, 158, 107, 0.12);
+    transform: translateY(-3px);
+}
+
+.gen-number {
+    display: block;
+    font-family: var(--font-serif);
+    font-size: 3.2rem;
+    font-weight: 700;
+    background: var(--gradient-gold);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+}
+
+.gen-label {
+    display: block;
+    color: var(--text-heading);
+    font-weight: 600;
+    margin: 0.5rem 0;
+    font-size: 0.95rem;
+}
+
+.gen-detail {
+    display: block;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    font-style: italic;
+}
+
+/* ============ PATRIARCH LIST ============ */
+.patriarch-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin: 2rem 0;
+}
+
+.patriarch-item {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: var(--radius-md);
+    padding: 1.5rem 2rem;
+    border-left: 4px solid var(--accent-emerald);
+    transition: var(--transition);
+}
+
+.patriarch-item:hover {
+    border-left-color: var(--accent-gold);
+    background: rgba(74, 158, 107, 0.05);
+    transform: translateX(4px);
+}
+
+.patriarch-item h3 {
+    margin-top: 0;
+    color: var(--accent-gold-light);
+}
+
+.patriarch-item h3::after {
+    display: none;
+}
+
+/* ============ TRIBE GRID ============ */
+.tribe-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
+}
+
+.tribe-card {
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    border: 1px solid var(--border-soft);
+    transition: var(--transition);
+    border-top: 3px solid var(--accent-emerald);
+}
+
+.tribe-card:hover {
+    border-top-color: var(--accent-gold);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    transform: translateY(-3px);
+}
+
+.tribe-card h3 {
+    color: var(--accent-gold);
+    margin-top: 0;
+    font-size: 1.3rem;
+}
+
+.tribe-card h3::after {
+    display: none;
+}
+
+.tribe-card p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+.tribe-card p strong {
+    color: var(--accent-emerald-light);
+}
+
+/* ============ GENEALOGY FLOW ============ */
+.genealogy-flow {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: var(--radius-md);
+    padding: 2rem;
+    border: 1px solid var(--border-accent);
+    margin: 2rem 0;
+    line-height: 2.2;
+    word-break: break-word;
+}
+
+.genealogy-flow strong {
+    color: var(--accent-gold);
+    font-size: 1.1rem;
+}
+
+/* ============ HIGHLIGHTS ============ */
+.highlight-tree {
+    background: linear-gradient(120deg, rgba(74, 158, 107, 0.25) 0%, rgba(45, 107, 69, 0.2) 90%);
+    padding: 0.2rem 0.6rem;
+    border-radius: 5px;
+    font-weight: 500;
+    color: #a8d8b8;
+    border-bottom: 1px solid rgba(74, 158, 107, 0.4);
+}
+
+strong {
+    color: #d0e0cc;
+}
+
+em {
+    color: #b0c8a8;
+}
+
+blockquote {
+    font-family: var(--font-serif);
+    background: rgba(74, 158, 107, 0.06);
+    border-left: 4px solid var(--accent-gold);
+    padding: 1.5rem 2rem;
+    margin: 2rem 0;
+    font-style: italic;
+    color: #c8d8c0;
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    position: relative;
+}
+
+blockquote::before {
+    content: '"';
+    position: absolute;
+    top: -10px;
+    left: 15px;
+    font-size: 4rem;
+    color: var(--accent-emerald);
+    opacity: 0.15;
+    font-family: var(--font-serif);
+    line-height: 1;
+}
+
+/* ============ LISTS ============ */
+ul, ol {
+    margin: 1rem 0 1.5rem 1.8rem;
+    color: var(--text-secondary);
+}
+
+li {
+    margin-bottom: 0.7rem;
+    line-height: 1.65;
+}
+
+ul li::marker {
+    color: var(--accent-emerald-light);
+}
+
+/* ============ SCROLL TOP BUTTON ============ */
+.scroll-top-btn {
+    position: fixed;
+    bottom: 2.5rem;
+    right: 2.5rem;
+    background: var(--gradient-emerald);
+    color: #e8f5e8;
+    border: 2px solid rgba(201, 169, 78, 0.4);
+    border-radius: 50%;
+    width: 54px;
+    height: 54px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 0 20px rgba(74, 158, 107, 0.25);
+    transition: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.scroll-top-btn:hover {
+    background: linear-gradient(135deg, #6bc48a 0%, #4a9e6b 100%);
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.6), 0 0 32px rgba(74, 158, 107, 0.45);
+    border-color: var(--accent-gold);
+}
+
+.scroll-top-btn:active {
+    transform: translateY(-2px) scale(0.98);
+}
+
+/* ============ FOOTER ============ */
+footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding: 2rem;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border-accent);
+    font-style: italic;
+    letter-spacing: 0.5px;
+}
+
+/* ============ SELECTION ============ */
+::selection {
+    background: rgba(74, 158, 107, 0.4);
+    color: #e8f5e8;
+}
+
+/* ============ FOCUS STYLES ============ */
+.sidebar-link:focus-visible,
+.scroll-top-btn:focus-visible {
+    outline: 3px solid var(--accent-gold);
+    outline-offset: 3px;
+}
+
+/* ============ ANIMATIONS ============ */
+@keyframes subtleGlow {
+    0%, 100% { box-shadow: var(--shadow-card); }
+    50% { box-shadow: var(--shadow-hover), 0 0 16px rgba(74, 158, 107, 0.08); }
+}
+
+.tree-card {
+    animation: subtleGlow 10s ease-in-out infinite;
+}
+
+.tree-card:hover {
+    animation: none;
+}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 900px) {
+    .genealogy-container {
+        flex-direction: column;
+    }
+    
+    .sidebar-nav {
+        width: 100%;
+        min-width: 100%;
+        height: auto;
+        position: relative;
+        padding: 1rem;
+    }
+    
+    .sidebar-links {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 0.3rem;
+    }
+    
+    .sidebar-link {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.78rem;
+        border-left: none;
+        border-bottom: 2px solid transparent;
+    }
+    
+    .sidebar-link.active {
+        border-left: none;
+        border-bottom-color: var(--accent-gold);
+    }
+    
+    .main-content {
+        padding: 1rem;
+    }
+    
+    h1 { font-size: 2.3rem; }
+    h2 { font-size: 1.7rem; }
+    h3 { font-size: 1.3rem; }
+    
+    .tree-card {
+        padding: 1.5rem;
+    }
+    
+    .tribe-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .generation-count-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* ============ PRINT STYLES ============ */
+@media print {
+    .sidebar-nav, .scroll-top-btn {
+        display: none !important;
+    }
+    
+    body {
+        background: white;
+        color: #222;
+    }
+    
+    .tree-card {
+        box-shadow: none;
+        border: 1px solid #ccc;
+        background: white;
+        break-inside: avoid;
+    }
+    
+    h1, h2, h3 {
+        color: #222;
+        -webkit-text-fill-color: #222;
+        text-shadow: none;
+    }
+    
+    .gen-number {
+        -webkit-text-fill-color: #222;
+    }
+}
